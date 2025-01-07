@@ -1,0 +1,88 @@
+#!/bin/bash
+# Install essential tools for my development environment
+
+if [[ "$OSTYPE" != "darwin"* ]]; then
+  echo "Unsupported OS."
+  exit
+fi
+
+function init() {
+  echo "[-] Installing Xcode Command Line Tools [-]"
+  xcode-select --install
+
+  if ! hash brew &> /dev/null; then
+    echo "[-] Installing Homebrew [-]"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+}
+
+# Setup initial tools
+init
+
+# Install prerequisite packages
+echo "[-] Installing some prerequisite packages [-]"
+brew update
+brew install curl wget git coreutils watch ncdu jq fd
+
+# Install font
+echo "[-] Installing Source Code Pro Font [-]"
+brew install --cask font-jetbrains-mono-nerd-font
+
+# Backup dotfiles
+function backup() {
+  local backup_dir=dotfiles-bak-$(date +%s)
+
+  mkdir ~/$backup_dir
+  mv ~/.zshrc ~/$backup_dir/.zshrc
+  mv ~/.zshenv ~/$backup_dir/.zshenv
+}
+echo "[-] Backing up dotfiles [-]"
+backup
+
+# Link dotfiles
+function linking() {
+  ln -s $(pwd)/.zshrc ~/.zshrc
+  ln -s $(pwd)/.zshenv ~/.zshenv
+  ln -s $(pwd)/.gitignore ~/.gitignore
+  ln -s $(pwd)/.vimrc ~/.vimrc
+  ln -s $(pwd)/.fdignore ~/.fdignore
+  ln -s $(pwd)/.ideavimrc ~/.ideavimrc
+
+  mkdir -p ${XDG_CONFIG_HOME:=~/.config}
+  ln -s $(pwd)/ghostty $XDG_CONFIG_HOME/ghostty
+}
+echo "[-] Linking dotfiles [-]"
+linking
+
+# Install some extended packages
+echo "[-] Installing extended packages [-]"
+brew install zsh-autosuggestions parallel ripgrep fzf
+brew install httpie pyenv universal-ctags
+
+# Download git-prompt.sh script
+echo "[-] Downloading git-prompt.sh script [-]"
+mkdir -p ~/.zsh/plugins/git/
+curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.zsh/plugins/git/git-prompt.sh
+
+# Download Vim plugin manager
+echo "[-] Downloading vim-plug [-]"
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# Install default terminal emulator
+echo "[-] Installing Ghostty [-]"
+brew install ghostty
+
+# Create some essential folders
+echo "[-] Creating essential folders [-]"
+mkdir ~/chores
+mkdir ~/repos
+
+# Change default shell
+# echo "[-] Change default shell to Zsh [-]"
+# chsh -s $(which zsh)
+
+# Notify configuration finished
+echo "[-] Setup done. Run \`source ~/.zshrc\` to refresh shell config [-]"
