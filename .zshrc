@@ -40,6 +40,8 @@ source $HOME/.profile
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Aliases
+alias vim='nvim'
+alias vimgit='nvim -c ":G"'
 alias gs='git status'
 alias ga='git add .'
 alias gA='git restore --staged'

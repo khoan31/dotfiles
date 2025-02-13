@@ -50,11 +50,10 @@ function linking() {
   ln -s $(pwd)/.fdignore ~/.fdignore
   ln -s $(pwd)/.ideavimrc ~/.ideavimrc
 
-  ln -s $(pwd)/scripts ~/scripts
   mkdir -p ${XDG_CONFIG_HOME:=~/.config}
-  mkdir -p $XDG_CONFIG_HOME/nvim
+  ln -s $(pwd)/nvim $XDG_CONFIG_HOME/nvim
   ln -s $(pwd)/ghostty $XDG_CONFIG_HOME/ghostty
-  ln -s $(pwd)/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
+  ln -s $(pwd)/scripts ~/scripts
 }
 echo "[-] Linking dotfiles [-]"
 linking
@@ -62,17 +61,12 @@ linking
 # Install some extended packages
 echo "[-] Installing extended packages [-]"
 brew install zsh-autosuggestions parallel ripgrep fzf
-brew install httpie pyenv universal-ctags
+brew install neovim httpie pyenv universal-ctags
 
 # Download git-prompt.sh script
 echo "[-] Downloading git-prompt.sh script [-]"
 mkdir -p ~/.zsh/plugins/git/
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.zsh/plugins/git/git-prompt.sh
-
-# Download Vim plugin manager
-echo "[-] Downloading vim-plug [-]"
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
 # Install default terminal emulator
 echo "[-] Installing Ghostty [-]"

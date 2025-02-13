@@ -26,15 +26,8 @@ HISTSIZE=10000
 export TERM=xterm-256color
 export CLICOLOR=1
 
-# Fzf options
-export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS' 
- --color=fg:#777777,bg:-1,hl:#f05050,gutter:-1
- --color=fg+:#000000,bg+:-1,hl+:#aa3731,gutter:-1
- --color=info:#cb9000,prompt:#7a3e9d,pointer:#0083b2
- --color=marker:#ffbc5d,spinner:#448c27,header:#325cc0'
-
-# Setting fd as the default source for fzf
-export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden'
+# JDK21 path
+export JDK21=$HOME/.sdkman/candidates/java/21.0.4-amzn
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
