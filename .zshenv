@@ -23,13 +23,6 @@ HISTSIZE=10000
 export TERM=xterm-256color
 export CLICOLOR=1
 
-# Scripts directory
-export CHORES="$HOME/chores"
-export PATH="$HOME/chores:$PATH"
-
-# Repositories
-export REPOS="$HOME/repos"
-
 # Fzf options
 export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS' 
  --color=fg:#777777,bg:-1,hl:#f05050,gutter:-1
@@ -43,4 +36,3 @@ export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden'
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-

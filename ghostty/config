@@ -1,6 +1,6 @@
 # Theme and Font
 term = xterm-256color
-theme = alabaster
+theme = oxocarbon
 font-family = JetBrainsMonoNL Nerd Font Mono
 font-style = Regular
 font-thicken = true
@@ -16,12 +16,13 @@ adjust-underline-thickness = 2
 adjust-strikethrough-thickness = 2
 
 # Window
-window-padding-x = 5,5
+window-padding-x = 10,10
 window-padding-y = 5,5
 window-padding-balance = true
-window-padding-color = extend-always
-window-theme = light
+window-padding-color = background
+window-theme = dark
 window-title-font-family = JetBrains Mono NL
+window-vsync = true
 bold-is-bright = true
 
 # MacOS

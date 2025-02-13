@@ -7,9 +7,8 @@
 source ~/.vimrc
 
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
-set surround
-" set multiple-cursors
 set commentary
+set highlightedyank
 
 " IDE specific options
 set ideajoin
@@ -30,12 +29,9 @@ vnoremap <leader>s :action SearchEverywhere<CR>
 nnoremap <leader>b :action Switcher<CR>
 nnoremap <leader>B :action SwitcherAndRecentFiles<CR>
 
-" Find marked text
-vnoremap // y/<c-r>"<CR>
-
 " Code styles
-nnoremap <silent> <leader>l :action ReformatCode<CR>
-vnoremap <silent> <leader>l :action ReformatCode<CR>
+nnoremap <silent> gq :action ReformatCode<CR>
+vnoremap <silent> gq :action ReformatCode<CR>
 
 " Jump around
 nnoremap gd :action GotoDeclaration<CR>
@@ -46,12 +42,12 @@ nnoremap gr :action FindUsages<CR>
 vnoremap gr :action FindUsages<CR>
 
 " Run stuff
-nnoremap <leader>x :action RunMenu<CR>
-nnoremap gx :action RunClass<CR>
+nnoremap gx :action RunMenu<CR>
+nnoremap gX :action RunClass<CR>
 
 " Code actions
-nnoremap <leader>a :action GotoAction<CR>
-nnoremap <leader>k :action ShowHoverInfo<CR>
+nnoremap ga :action GotoAction<CR>
+nnoremap K :action ShowHoverInfo<CR>
 
 " Project view
 nnoremap - :action SelectInProjectView<CR>

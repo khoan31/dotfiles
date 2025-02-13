@@ -75,11 +75,6 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 echo "[-] Installing Ghostty [-]"
 brew install ghostty
 
-# Create some essential folders
-echo "[-] Creating essential folders [-]"
-mkdir ~/chores
-mkdir ~/repos
-
 # Change default shell
 # echo "[-] Change default shell to Zsh [-]"
 # chsh -s $(which zsh)

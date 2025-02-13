@@ -5,7 +5,7 @@ These are my personal configuration files, which could be changed as I develop m
 ## Installation
 Clone repository to your local device and `cd` into it:
 ```shell
-$ git clone https://github.com/sciovir/dotfiles.git
+$ git clone https://github.com/khoan31/dotfiles.git
 $ cd dotfiles
 ```
 

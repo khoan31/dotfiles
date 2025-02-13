@@ -1,12 +1,12 @@
+/* Put this to ~/Library/Application Support/Firefox/Profiles/<firefox_profile>/chrome/, should be your default profile*/
 .tab-text.tab-label{
   font-size: 12px;
 }
 
-.tab-context-line {
+#tabbrowser-tabs .tab-context-line {
   display: none;
 }
-.tab-icon-image {
-  box-sizing: content-box;
-  padding: 3px 0;
-  border-bottom: 2px solid var(--identity-icon-color);
+
+#tabbrowser-tabs .tab-background {
+  border: solid 2px var(--identity-icon-color) !important;
 }

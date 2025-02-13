@@ -2,8 +2,22 @@
 set nocompatible
 
 " Re-map leader key
-nnoremap <space> <nop>
+nnoremap <Space> <Nop>
 let g:mapleader=' '
+
+" ----- Autocommands -----
+" Quick exit some filetypes
+autocmd! FileType help,qf,diff,fugitive,fugitiveblame,dbout nnoremap <silent> <buffer> q :q<CR>
+
+" Indentation by filetypes
+autocmd FileType c,cpp setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
+autocmd FileType go setlocal shiftwidth=4 tabstop=4 softtabstop=4 noexpandtab
+autocmd FileType java setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
+autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+
+" Open the quickfix window whenever a quickfix command is executed
+autocmd! QuickFixCmdPost [^l]* cwindow
 
 " ----- General settings -----
 " Encoding
@@ -26,20 +40,12 @@ if has('mac')
   " List your plugins here
   " Make sure you use single quotes
 
-  " A command-line fuzzy finder
-  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-  Plug 'junegunn/fzf.vim'
-
   " fugitive.vim: A Git wrapper so awesome, it should be illegal
   Plug 'tpope/vim-fugitive'
-
-  " A Vim plugin which shows git diff markers in the sign column
-  Plug 'airblade/vim-gitgutter'
 
   " Modern database interface for Vim
   Plug 'tpope/vim-dadbod'
   Plug 'kristijanhusak/vim-dadbod-ui'
-  Plug 'kristijanhusak/vim-dadbod-completion'
 
   " Neovim plugin for GitHub Copilot
   Plug 'github/copilot.vim'
@@ -51,16 +57,10 @@ endif
 " Turn syntax highlighting on.
 syntax enable
 
-" Add numbers to each line on the left-hand side.
-set number
-set relativenumber
-set ruler
-set hidden
-
 " Show invisible characters
 set list
 " Set the characters for the invisibles
-set listchars=tab:›\ ,eol:¬,trail:⋅
+set listchars=tab:ǀ\ ,eol:¬,nbsp:␣,trail:⋅
 set showbreak=↪
 
 " Auto copy indent and auto read file change
@@ -78,6 +78,12 @@ set complete=.,w,b,u,t
 " Sequence of letters which describes how automatic formatting is to be done
 set formatoptions=tcqj
 
+" Add numbers to each line on the left-hand side.
+set number
+set relativenumber
+set ruler
+set hidden
+
 " Set default indentation
 set expandtab
 set smarttab
@@ -91,10 +97,10 @@ set nobackup
 set noswapfile
 set wrap
 
-" Do not let cursor scroll below or above N number of lines when scrolling.
-set scrolloff=50
+" Split behaviour
 set splitbelow
 set splitright
+set sidescrolloff=10
 set title
 
 " Searching
@@ -131,7 +137,7 @@ set ttimeoutlen=50
 
 " Enable auto completion menu after pressing TAB.
 set wildmode=full
-set wildcharm=<c-z>
+set wildcharm=<C-z>
 
 " wildmenu settings
 set wildmenu
@@ -141,32 +147,21 @@ if has('mac')
   set wildignore+=*/Library/*,*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*,*/.DS_Store
 endif
 
-" Add C/C++ include to path on MacOS
-function s:SetCIncludePath()
-  let l:sdk = system('xcrun --show-sdk-path')
-  let l:sdk = substitute(l:sdk, '\n', '', 'g')
-  execute 'set path+=' . l:sdk . '/usr/include'
-  execute 'set path+=' . l:sdk . '/usr/include/c++/v1'
-endfunction
-
-" Set include path for C/C++ development on MacOS
-if executable('xcrun')
-  autocmd FileType c,cpp call <SID>SetCIncludePath()
-endif
-
 " Program to use for the :grep command
 if executable('rg') > 0
   set grepprg=rg\ --vimgrep\ --smart-case\ --hidden
+  nmap <silent> <leader>si :set grepprg=rg\ --vimgrep\ --smart-case\ --hidden\ --no-ignore<CR>
+  nmap <silent> <leader>sn :set grepprg=rg\ --vimgrep\ --smart-case\ --hidden<CR>
 endif
 
 " Set the commands to save in history default number is 20.
 set history=10000
 set ttyfast
 
-" Set statusline style and background
-set laststatus=2
-set background=light
+" Basic theming
+set background=dark
 set fillchars+=vert:│
+set laststatus=2
 
 " Colorscheme
 if has('mac')
@@ -174,72 +169,35 @@ if has('mac')
   colorscheme wildcharm
 endif
 
-" ----- Highlights -----
-" Highlight marked files in the same way search matches are
-hi! link netrwMarkFile Search
-
 " ----- Keymaps -----
 " Remap switch region keys
-nnoremap <c-h> <c-w>h
-nnoremap <c-j> <c-w>j
-nnoremap <c-k> <c-w>k
-nnoremap <c-l> <c-w>l
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
 " Remap switch region keys within terminal
-tnoremap <c-h> <c-\><c-n><c-w>h
-tnoremap <c-j> <c-\><c-n><c-w>j
-tnoremap <c-k> <c-\><c-n><c-w>k
-tnoremap <c-l> <c-\><c-n><c-w>l
+tnoremap <C-h> <c-\><c-n><C-w>h
+tnoremap <C-j> <c-\><c-n><C-w>j
+tnoremap <C-k> <c-\><c-n><C-w>k
+tnoremap <C-l> <c-\><c-n><C-w>l
 
 " Re-size split windows using arrow keys
-nnoremap <silent> <up> :resize -2<cr>
-nnoremap <silent> <right> :vertical resize +2<cr>
-nnoremap <silent> <down> :resize +2<cr>
-nnoremap <silent> <left> :vertical resize -2<cr>
+nnoremap <silent> <Up> :resize -2<CR>
+nnoremap <silent> <Right> :vertical resize +2<CR>
+nnoremap <silent> <Down> :resize +2<CR>
+nnoremap <silent> <Left> :vertical resize -2<CR>
 
-" Dismiss highlight
-nnoremap <silent> H :noh<cr>
-
-" Remap scroll
-nnoremap <C-d> <C-d>zz
-nnoremap <C-u> <C-u>zz
+" Dismiss highlight and escape terminal
+nnoremap <silent> <Esc> :nohlsearch<CR>
+tnoremap <silent> <Esc><Esc> <C-\><C-n>
 
 " Navigate through quickfix list
-nnoremap <silent> ]q :cnext<cr>zz
-nnoremap <silent> [q :cprev<cr>zz
-
-" Open netrw at current dir
-nmap - :Explore<cr>
-
-" Quick exit some filetypes
-autocmd! FileType help,qf,diff,fugitive,fugitiveblame,dbout nnoremap <silent> <buffer> q :q<CR>
-autocmd! FileType netrw nnoremap <silent> <buffer> x :Rexplore<cr>
-
-" Indentation by filetypes
-autocmd FileType c,cpp setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
-autocmd FileType java setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
-autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
-autocmd FileType go setlocal shiftwidth=4 tabstop=4 softtabstop=4 noexpandtab
-autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
-
-" Run current java test file
-function s:RunMavenTest()
-  let l:dirs = split(@%, '[/]')
-
-  if index(l:dirs, 'test') < 0
-    echo 'Not a test file!'
-    return
-  endif
-
-  let l:module = l:dirs[0] != 'src' ? l:dirs[0] : ''
-  let l:test_class = join(l:dirs[4 : ], '.')[ : -6 ]
-
-  execute('silent !mvn test -pl :' .. module .. ' -Dtest=' .. test_class .. ' -DskipTests=false')
-endfunction
-autocmd FileType java nnoremap <leader>T :call <SID>RunMavenTest()<CR>
+nnoremap <silent> ]q :cnext<CR>zz
+nnoremap <silent> [q :cprev<CR>zz
 
 " Search current marked text
-vnoremap // y/\V<c-r>=escape(@",'/\')<cr><cr>
+vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
 
 " Copy marked text/paste to/from global register
 nnoremap <leader>Y "+Y
@@ -250,65 +208,109 @@ vnoremap <leader>p "+p
 
 " Fuzzy find
 nmap <leader>f :find **/*
-vmap <leader>f "0y:find **/<c-r>0*<c-z>
-nmap <leader>F :e <c-z>
-nmap <leader>b :b <c-z>
-nmap <leader>j :jumps<cr>
-nmap <leader>m :marks<cr>
-nmap <leader>g :grep ''<left>
-vmap <leader>g "0y:grep '<c-r>0'<left>
-nmap <leader>G :set grepprg=<c-z>
-nmap <leader>s :grep '<c-r>+'<left>
+vmap <leader>f "0y:find **/*<C-r>0<C-z>
+nmap <leader>F :find **/*<C-r><C-w><C-z>
+nmap <leader>e :e %:p:h<C-z>
+nmap <leader>b :b <C-z>
+nmap <leader>B :bd <C-z>
+nmap <leader>j :jumps<CR>
+nmap <leader>m :marks<CR>
+nmap <leader>g :grep ''<Left>
+vmap <leader>g "0y:grep '<C-r>0'<Left>
+nmap <leader>G :grep '<C-r><C-w>'<CR><CR>
 
 " Search and replace
-nnoremap <leader>r :%s/<c-r><c-w>//g<left><left>
-vnoremap <leader>r "5y<esc>:%s/<c-r>5//g<left><left>
+nnoremap <leader>r :%s/<C-r><C-w>//g<Left><Left>
+vnoremap <leader>r "0y:%s/<C-r>0//g<Left><Left>
 
-" Open the quickfix window whenever a quickfix command is executed
-autocmd! QuickFixCmdPost [^l]* cwindow
+" Copy, move and remove file
+nnoremap <leader>sc :!cp -r %:p<C-z> %:p:h<Left><Left><Left><Left><Left><Left>
+nnoremap <leader>sm :!mv %:p<C-z> %:p:h<Left><Left><Left><Left><Left><Left>
+nnoremap <leader>sr :!rm -rf %:p<C-z>
 
+" ----- Usercommands -----
+" Run current java test file
+function! s:RunMavenTest(...) abort
+  let l:file_path = expand('%:p')
+  let l:dirs = split(l:file_path, '/')
+
+  let l:is_test = v:false
+  let l:module = ''
+  let l:class = ''
+
+  for i in range(len(l:dirs) - 1, 0, -1)
+    if l:dirs[i] == 'test'
+      let l:is_test = v:true
+      let l:class = join(l:dirs[i+2:], '.')
+      let l:class = substitute(l:class, '\.java$', '', '')
+    endif
+
+    if l:dirs[i] == 'src' && i - 1 >= 0
+      let l:module = l:dirs[i - 1]
+    endif
+  endfor
+
+  if !l:is_test
+    echo 'Not a test file!'
+    return
+  endif
+
+  if a:0 > 0
+    let l:class = l:class . '#' . a:1
+  endif
+
+  execute 'terminal mvn test -T 1C -pl :' . l:module . ' -Dtest=' . fnameescape(l:class) . ' -DskipTests=false -Dgroups=small,medium'
+endfunction
+autocmd FileType java command! -nargs=? MvnTest call <SID>RunMavenTest(<f-args>)
+
+" Custom Find command
+if executable('fd')
+  function! s:OpenFdFile(item) abort
+    if filereadable(a:item) || isdirectory(a:item)
+      execute 'edit' a:item
+      return
+    endif
+
+    let l:matches = <SID>CompleteFd(a:item, '', '')
+    if len(l:matches) > 0
+      execute 'edit' l:matches[0]
+    else
+      echo 'No files or directories found!'
+    endif
+  endfunction
+
+  function! s:CompleteFd(pattern, cmdline, cursorpos) abort
+    let l:cmd = 'fd -H -tf -td "' . a:pattern . '" ' . getcwd()
+    if isdirectory(a:pattern)
+      let l:cmd = 'fd -H -tf -td . ' . a:pattern
+    endif
+    let l:results = systemlist(l:cmd)
+    return l:results
+  endfunction
+  command! -nargs=1 -complete=customlist,<SID>CompleteFd Find call <SID>OpenFdFile(<f-args>)
+
+  " Remap fuzzy find
+  nnoremap <leader>f :Find .*
+  vnoremap <leader>f "0y:Find .*<C-r>0<C-z>
+  nnoremap <leader>F :Find .*<C-r><C-w><C-z>
+endif
+
+" ----- Plugin Configs -----
 if has('mac')
-  " Fzf options
-  let g:fzf_vim = {}
-  let g:fzf_vim.preview_window = []
-  let g:fzf_layout = { 'down': '41%' }
-  " Fzf keymaps
-  augroup fzf_keymaps
-    autocmd!
-    nnoremap <leader>f :Files<CR>
-    nnoremap <leader>F :GFiles<CR>
-    nnoremap <leader>b :Buffers<CR>
-    nnoremap <leader>j :Jumps<CR>
-    nnoremap <leader>m :Marks<CR>
-    nnoremap <leader>g :Rg<CR>
-    vnoremap <leader>f "0y":Files <C-r>0<CR>
-    vnoremap <leader>g "0y:Rg <C-r>0<CR>
-  augroup END
-  " Fzf highlight groups
-  highlight! fzf1 ctermfg=grey ctermbg=NONE
-  highlight! fzf2 ctermfg=grey ctermbg=NONE
-  highlight! fzf3 ctermfg=grey ctermbg=NONE
-
-  " Gitgutter keymaps
-  augroup gitgutter_keymaps
-    autocmd!
-    nmap ]h <Plug>(GitGutterNextHunk)
-    nmap [h <Plug>(GitGutterPrevHunk)
-  augroup END
-  " Gitgutter highlight group
-  highlight! link SignColumn LineNr
-
   " Dadbod UI keymap
   nnoremap <leader>db :DBUIToggle<CR>
 
   " Copilot options
   let g:copilot_enabled = 0
-  " let g:copilot_no_tab_map = v:true
-  " inoremap <silent><script><expr> <c-e> copilot#Accept('\<cr>')
+  let g:copilot_no_tab_map = v:true
+  inoremap <silent><script><expr> <C-e> copilot#Accept('\<CR>')
 endif
 
+" ----- Highlights -----
+" Highlight marked files in the same way search matches are
+highlight link netrwMarkFile Search
+
 " Set basic highlight groups
-highlight! Statusline cterm=NONE ctermbg=grey ctermfg=black guibg=grey guifg=black
-highlight! StatuslineNC cterm=NONE ctermbg=lightgrey ctermfg=grey guibg=lightgrey guifg=darkgrey
-highlight! VertSplit cterm=NONE ctermbg=NONE
-highlight! Visual ctermbg=blue ctermfg=white
+highlight Statusline cterm=NONE guibg=NONE guifg=grey
+highlight StatuslineNC cterm=NONE guibg=NONE guifg=darkgrey
+highlight VertSplit cterm=NONE guibg=NONE guifg=grey
