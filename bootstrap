@@ -50,9 +50,11 @@ function linking() {
   ln -s $(pwd)/.fdignore ~/.fdignore
   ln -s $(pwd)/.ideavimrc ~/.ideavimrc
 
-  mkdir -p ${XDG_CONFIG_HOME:=~/.config}
-  ln -s $(pwd)/ghostty $XDG_CONFIG_HOME/ghostty
   ln -s $(pwd)/scripts ~/scripts
+  mkdir -p ${XDG_CONFIG_HOME:=~/.config}
+  mkdir -p $XDG_CONFIG_HOME/nvim
+  ln -s $(pwd)/ghostty $XDG_CONFIG_HOME/ghostty
+  ln -s $(pwd)/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
 }
 echo "[-] Linking dotfiles [-]"
 linking
@@ -69,8 +71,8 @@ curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-pro
 
 # Download Vim plugin manager
 echo "[-] Downloading vim-plug [-]"
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
 # Install default terminal emulator
 echo "[-] Installing Ghostty [-]"

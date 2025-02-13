@@ -14,10 +14,13 @@ autocmd FileType c,cpp setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
 autocmd FileType go setlocal shiftwidth=4 tabstop=4 softtabstop=4 noexpandtab
 autocmd FileType java setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
-autocmd FileType javascript setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+autocmd FileType javascript,typescript setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 
 " Open the quickfix window whenever a quickfix command is executed
 autocmd! QuickFixCmdPost [^l]* cwindow
+
+" Highlight text on yank
+autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup='Visual',timeout=300}
 
 " ----- General settings -----
 " Encoding
@@ -33,12 +36,18 @@ filetype plugin on
 filetype indent on
 filetype plugin indent on
 
-if has('mac')
+if has('nvim')
   " ----- Plugin definitions -----
   call plug#begin()
 
   " List your plugins here
   " Make sure you use single quotes
+
+  " Nvim Treesitter configurations and abstraction layer
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+  " A dark and light Neovim theme written in fennel, inspired by IBM Carbon.
+  Plug 'nyoom-engineering/oxocarbon.nvim'
 
   " fugitive.vim: A Git wrapper so awesome, it should be illegal
   Plug 'tpope/vim-fugitive'
@@ -141,7 +150,7 @@ set wildcharm=<C-z>
 
 " wildmenu settings
 set wildmenu
-if has('mac')
+if has('nvim')
   set wildoptions=pum,tagfile
   set wildignore=*.o,*~,*.a,*.so,*.pyc,*.swp,.git/,*.class,*/target/*,*/build/*,.idea/
   set wildignore+=*/Library/*,*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*,*/.DS_Store
@@ -164,9 +173,9 @@ set fillchars+=vert:│
 set laststatus=2
 
 " Colorscheme
-if has('mac')
+if has('nvim')
   set termguicolors
-  colorscheme wildcharm
+  colorscheme oxocarbon
 endif
 
 " ----- Keymaps -----
@@ -295,7 +304,10 @@ if executable('fd')
 endif
 
 " ----- Plugin Configs -----
-if has('mac')
+if has('nvim')
+  " Treesitter
+  lua require('nvim-treesitter.configs').setup({auto_install=true,highlight={enable=true},indent={enable=true}})
+
   " Dadbod UI keymap
   nnoremap <leader>db :DBUIToggle<CR>
 
