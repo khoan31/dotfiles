@@ -52,6 +52,7 @@ function linking() {
 
   mkdir -p ${XDG_CONFIG_HOME:=~/.config}
   ln -s $(pwd)/ghostty $XDG_CONFIG_HOME/ghostty
+  ln -s $(pwd)/scripts ~/scripts
 }
 echo "[-] Linking dotfiles [-]"
 linking

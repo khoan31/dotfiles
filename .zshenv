@@ -14,6 +14,9 @@ export LC_CTYPE=en_US.UTF-8
 export EDITOR="vim"
 export VISUAL="vim"
 
+# Scripts dir
+export SCRIPTS="$HOME/scripts"
+
 # Zsh history
 HISTFILE=$HOME/.zhistory
 SAVEHIST=10000

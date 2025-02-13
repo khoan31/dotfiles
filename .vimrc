@@ -95,7 +95,7 @@ set shiftround
 " Do not save temporary files.
 set nobackup
 set noswapfile
-set wrap
+set nowrap
 
 " Split behaviour
 set splitbelow
@@ -177,10 +177,10 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
 " Remap switch region keys within terminal
-tnoremap <C-h> <c-\><c-n><C-w>h
-tnoremap <C-j> <c-\><c-n><C-w>j
-tnoremap <C-k> <c-\><c-n><C-w>k
-tnoremap <C-l> <c-\><c-n><C-w>l
+tnoremap <C-h> <C-\><C-n><C-w>h
+tnoremap <C-j> <C-\><C-n><C-w>j
+tnoremap <C-k> <C-\><C-n><C-w>k
+tnoremap <C-l> <C-\><C-n><C-w>l
 
 " Re-size split windows using arrow keys
 nnoremap <silent> <Up> :resize -2<CR>
@@ -188,9 +188,8 @@ nnoremap <silent> <Right> :vertical resize +2<CR>
 nnoremap <silent> <Down> :resize +2<CR>
 nnoremap <silent> <Left> :vertical resize -2<CR>
 
-" Dismiss highlight and escape terminal
+" Dismiss highlight
 nnoremap <silent> <Esc> :nohlsearch<CR>
-tnoremap <silent> <Esc><Esc> <C-\><C-n>
 
 " Navigate through quickfix list
 nnoremap <silent> ]q :cnext<CR>zz
@@ -300,10 +299,8 @@ if has('mac')
   " Dadbod UI keymap
   nnoremap <leader>db :DBUIToggle<CR>
 
-  " Copilot options
+  " Disable Copilot by default
   let g:copilot_enabled = 0
-  let g:copilot_no_tab_map = v:true
-  inoremap <silent><script><expr> <C-e> copilot#Accept('\<CR>')
 endif
 
 " ----- Highlights -----
