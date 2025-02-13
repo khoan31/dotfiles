@@ -20,7 +20,7 @@ autocmd FileType javascript,typescript setlocal shiftwidth=2 tabstop=2 softtabst
 autocmd! QuickFixCmdPost [^l]* cwindow
 
 " Highlight text on yank
-autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup='Visual',timeout=300}
+autocmd TextYankPost * silent! lua vim.highlight.on_yank({higroup='Visual', timeout=300})
 
 " ----- General settings -----
 " Encoding
@@ -306,7 +306,7 @@ endif
 " ----- Plugin Configs -----
 if has('nvim')
   " Treesitter
-  lua require('nvim-treesitter.configs').setup({auto_install=true,highlight={enable=true},indent={enable=true}})
+  lua require('nvim-treesitter.configs').setup({auto_install=true, highlight={enable=true}, indent={enable=true}})
 
   " Dadbod UI keymap
   nnoremap <leader>db :DBUIToggle<CR>
@@ -320,6 +320,6 @@ endif
 highlight link netrwMarkFile Search
 
 " Set basic highlight groups
-highlight Statusline cterm=NONE guibg=NONE guifg=grey
-highlight StatuslineNC cterm=NONE guibg=NONE guifg=darkgrey
-highlight VertSplit cterm=NONE guibg=NONE guifg=grey
+highlight Statusline cterm=NONE guibg=NONE guifg=darkgrey
+highlight StatuslineNC cterm=NONE guibg=NONE guifg=grey
+highlight VertSplit cterm=NONE guibg=NONE guifg=darkgrey
