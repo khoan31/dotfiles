@@ -56,8 +56,8 @@ vim.opt.wrap = false
 -- Do not let cursor scroll surpass N number of columns when side scrolling.
 vim.opt.sidescrolloff = 10
 
--- Get rid of preview buffer
-vim.opt.completeopt:remove('preview')
+-- Preview substitutions live, as you type!
+vim.opt.inccommand = 'split'
 
 -- Config wildmenu
 vim.opt.wildignore = '*.o,*~,*.a,*.so,*.pyc,*.swp,*/.git/*,*.class'

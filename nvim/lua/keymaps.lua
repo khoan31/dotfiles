@@ -2,6 +2,20 @@
 vim.keymap.set('n', '<Esc>', '<Cmd>nohlsearch<CR>')
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>')
 
+-- Generate tags
+if vim.fn.executable('rg') > 0 then
+   vim.keymap.set('n', '<leader>T', function()
+      local common = require('utils.common')
+      common.run_async(function()
+         assert(coroutine.running())
+         vim.cmd([[!ctags --tag-relative=never -G -R .]])
+         coroutine.yield()
+      end)
+   end, { desc = 'Generate [T]ags' })
+else
+   print('No universal-ctags installation found!')
+end
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open [d]iagnostic float' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev [d]iagnostic' })
