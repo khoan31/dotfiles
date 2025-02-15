@@ -8,7 +8,7 @@ autocmd! FileType checkhealth,dbout nnoremap <silent> <buffer> q :bd<cr>
 " highlight when yanking (copying) text
 augroup highlight_yank
   autocmd!
-  autocmd TextYankPost * silent! lua vim.highlight.on_yank()
+  autocmd TextYankPost * silent! lua vim.hl.on_yank({higroup='Visual',timeout=300})
 augroup END
 
 " ==============================================================================
@@ -85,16 +85,15 @@ if executable('rg') > 0
   set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --column\ --hidden\ --no-ignore
 endif
 
-" Set the commands to save in history default number is 20.
+" set the commands to save in history default number is 20.
 set history=10000
 
-" Basic theming
+" basic theming
 set background=dark
 set termguicolors
-set laststatus=3
-lua require('common').set_default_statusline()
+set laststatus=2
 
-" Re-map leader key
+" re-map leader key
 nnoremap <space> <nop>
 let g:mapleader=' '
 
@@ -125,6 +124,9 @@ Plug 'nvim-telescope/telescope.nvim', { 'branch': '0.1.x' }
 " a git wrapper so awesome, it should be illegal
 Plug 'tpope/vim-fugitive'
 
+" delete/change/add parentheses/quotes/xml-tags/much more with ease
+Plug 'tpope/vim-surround'
+
 " modern database interface for vim
 Plug 'tpope/vim-dadbod'
 Plug 'kristijanhusak/vim-dadbod-ui'
@@ -146,15 +148,10 @@ call plug#end()
 "   syntax off            " disable syntax highlighting
 
 " ==============================================================================
-" autocmds
+" command and autocmds
 " ==============================================================================
-augroup diagnostic_counter
-  autocmd!
-  autocmd BufEnter,DiagnosticChanged * lua require('common').count_diagnostic()
-augroup END
-
-" Create session directory if not exist
-function! s:get_session_dir()
+" create session directory if not exist
+function! s:get_session_dir() abort
   let l:session_dir = stdpath('data') . '/sessions'
   if !isdirectory(l:session_dir)
     call mkdir(l:session_dir, 'p')
@@ -163,25 +160,27 @@ function! s:get_session_dir()
 endfunction
 
 " make session automatically when save a buffer or exit vim
-function! s:auto_make_session()
-  if argv(0) == '' || argv(0) == getcwd()
-    let l:session_dir = <SID>get_session_dir()
-    let l:session_name = fnamemodify(getcwd(), ':p:h:t')
-    execute 'silent! mksession! ' . l:session_dir . '/' . l:session_name . '.vim'
+function! s:auto_make_session() abort
+  if !empty(argv()) && argv(0) != getcwd()
+    return
   endif
+  let l:session_dir = <sid>get_session_dir()
+  let l:session_name = fnamemodify(getcwd(), ':p:h:t')
+  execute 'silent! mksession! ' . l:session_dir . '/' . l:session_name . '.vim'
 endfunction
-augroup make_session
+augroup vim_sessionizer
   autocmd!
-  autocmd BufWritePost,VimLeavePre * call <SID>auto_make_session()
+  autocmd BufWritePost,VimLeavePre * call <sid>auto_make_session()
 augroup END
 
 " load session automatically when start vim
-function! s:auto_source_session()
-  let l:session_dir = <SID>get_session_dir()
+function! s:auto_source_session() abort
+  if !empty(argv()) && argv(0) != getcwd()
+    return
+  endif
+  let l:session_dir = <sid>get_session_dir()
   let l:session_name = fnamemodify(getcwd(), ':p:h:t')
   let l:session_file = l:session_dir . '/' . l:session_name . '.vim'
-  echo l:session_file
-
   if filereadable(l:session_file)
     let l:choice = confirm("", "load last session? &yes\n&no\n&clear", 2, "Question")
     if l:choice == 1
@@ -191,9 +190,9 @@ function! s:auto_source_session()
     endif
   endif
 endfunction
-augroup source_session
+augroup vim_session
   autocmd!
-  autocmd VimEnter * call <SID>auto_source_session()
+  autocmd VimEnter * call <sid>auto_source_session()
 augroup END
 
 " ==============================================================================
@@ -201,12 +200,12 @@ augroup END
 " ==============================================================================
 nnoremap <silent> <esc> :nohlsearch<cr>
 
-" Use ctrl+<hjkl> to switch between windows
+" use ctrl+<hjkl> to switch between windows
 nnoremap <c-h> <c-w>h
 nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-l> <c-w>l
-" same but from terminal
+" same but between terminals
 tnoremap <c-h> <c-\><c-n><c-w>h
 tnoremap <c-j> <c-\><c-n><c-w>j
 tnoremap <c-k> <c-\><c-n><c-w>k
@@ -250,9 +249,9 @@ nnoremap <leader>r :%s/<c-r><c-w>//g<left><left>
 vnoremap <leader>r "0y:%s/<c-r>0//g<left><left>
 
 " copy, move and remove file
-nnoremap <leader>sc :!cp -r %:p<c-z> %:p:h<left><left><left><left><left><left>
-nnoremap <leader>sm :!mv %:p<c-z> %:p:h<left><left><left><left><left><left>
-nnoremap <leader>sr :!rm -rf %:p<c-z>
+nnoremap <leader>C :!cp -r %:p<c-z> %:p:h<left><left><left><left><left><left>
+nnoremap <leader>M :!mv %:p<c-z> %:p:h<left><left><left><left><left><left>
+nnoremap <leader>R :!rm -rf %:p<c-z>
 
 " ==============================================================================
 " plugins configuration
@@ -262,20 +261,20 @@ nnoremap <leader>sr :!rm -rf %:p<c-z>
 silent! colorscheme xcodedarkhc
 
 " nvim-treesitter
-lua require('nvim-treesitter.configs').setup({auto_install=true, highlight={enable=true}, indent={enable=true}})
+lua require('nvim-treesitter.configs').setup({auto_install=true,highlight={enable=true},indent={enable=true}})
 lua require('mason').setup()
 
 " telescope
-lua require('telescope').setup({defaults={layout_strategy='bottom_pane', layout_config={height=0.41, preview_cutoff=543}}})
+lua require('telescope').setup({defaults={layout_strategy='bottom_pane',layout_config={height=0.41,preview_cutoff=543}}})
 " keymaps
 nnoremap <leader>f <cmd>lua require('telescope.builtin').find_files()<cr>
-vnoremap <leader>f "0y:lua require('telescope.builtin').find_files({search_file = '<c-r>0'})<cr>
+vnoremap <leader>f "0y:lua require('telescope.builtin').find_files({search_file='<c-r>0'})<cr>
 nnoremap <leader>F <cmd>lua require('telescope.builtin').find_files({search_file=vim.fn.expand('<cword>')})<cr>
-nnoremap <leader>ss <cmd>lua require('telescope.builtin').git_files()<cr>
+nnoremap <leader>s <cmd>lua require('telescope.builtin').git_files()<cr>
 nnoremap <leader>j <cmd>lua require('telescope.builtin').jumplist()<cr>
 nnoremap <leader>m <cmd>lua require('telescope.builtin').marks()<cr>
 nnoremap <leader>g <cmd>lua require('telescope.builtin').live_grep()<cr>
-vnoremap <leader>g "0y:lua require('telescope.builtin').grep_string({search = '<c-r>0'})<cr>
+vnoremap <leader>g "0y:lua require('telescope.builtin').grep_string({search='<c-r>0'})<cr>
 nnoremap <leader>G <cmd>lua require('telescope.builtin').grep_string({search=vim.fn.expand('<cword>')})<cr>
 nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>o <cmd>lua require('telescope.builtin').resume()<cr>
@@ -291,4 +290,4 @@ highlight link netrwMarkFile Search
 " set basic highlight groups
 highlight Statusline cterm=NONE guibg=NONE guifg=darkgrey
 highlight StatuslineNC cterm=NONE guibg=NONE guifg=grey
-highlight VertSplit cterm=NONE guibg=NONE guifg=darkgrey
+highlight WinSeparator cterm=NONE guibg=NONE guifg=grey

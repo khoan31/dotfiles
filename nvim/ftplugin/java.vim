@@ -1,8 +1,8 @@
 " indent
-set expandtab
-set shiftwidth=4
-set tabstop=4
-set softtabstop=4
+setlocal expandtab
+setlocal shiftwidth=4
+setlocal tabstop=4
+setlocal softtabstop=4
 
 " maven test
 if executable('mvn')
@@ -44,54 +44,47 @@ endif
 
 " lsp
 lua << eof
-local common = require('common')
+local data_home = os.getenv('XDG_DATA_HOME')
+local workspace_dir = data_home .. '/jdtls/workspace/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
+local jdtls = data_home .. '/nvim/mason/packages/jdtls'
 local config = require('lsp').make_cfg()
 
-common.run_async(function()
-   assert(coroutine.running())
-   local data_home = os.getenv('XDG_DATA_HOME')
-   local workspace_dir = data_home .. '/jdtls/workspace/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
-   local jdtls = data_home .. '/nvim/mason/packages/jdtls'
-
-   config['name'] = 'jdtls'
-   config['cmd'] = {
-      os.getenv('JDK21') .. '/bin/java',
-      '-Declipse.application=org.eclipse.jdt.ls.core.id1',
-      '-Dosgi.bundles.defaultStartLevel=4',
-      '-Declipse.product=org.eclipse.jdt.ls.core.product',
-      '-Dlog.protocol=true',
-      '-Dlog.level=ALL',
-      '-Xmx2g',
-      '--add-modules=ALL-SYSTEM',
-      '--add-opens', 'java.base/java.util=ALL-UNNAMED',
-      '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
-      '-jar', vim.fn.glob(jdtls .. '/plugins/org.eclipse.equinox.launcher_*.jar'),
-      '-configuration', jdtls .. '/config_mac_arm',
-      '-data', workspace_dir,
-   }
-   config['root_dir'] = vim.fn.getcwd() -- or vim.fs.root(0, {'pom.xml', '.git', 'mvnw', 'gradlew'}),
-   config['settings'] = {
-      java = {
-         references = {
-            includeDecompiledSources = true,
-         },
-         eclipse = {
-            downloadSources = true,
-         },
-         maven = {
-            downloadSources = true,
-         },
-         signatureHelp = { enabled = true },
-         sources = {
-            organizeImports = {
-               starThreshold = 9999,
-               staticStarThreshold = 9999,
-            },
-         },
-      }
-   }
-
-   require('jdtls').start_or_attach(config)
-   coroutine.yield()
-end)
+config['name'] = 'jdtls'
+config['cmd'] = {
+  os.getenv('JDK21') .. '/bin/java',
+  '-Declipse.application=org.eclipse.jdt.ls.core.id1',
+  '-Dosgi.bundles.defaultStartLevel=4',
+  '-Declipse.product=org.eclipse.jdt.ls.core.product',
+  '-Dlog.protocol=true',
+  '-Dlog.level=ALL',
+  '-Xmx2g',
+  '--add-modules=ALL-SYSTEM',
+  '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+  '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+  '-jar', vim.fn.glob(jdtls .. '/plugins/org.eclipse.equinox.launcher_*.jar'),
+  '-configuration', jdtls .. '/config_mac_arm',
+  '-data', workspace_dir,
+}
+config['root_dir'] = vim.fn.getcwd() -- or vim.fs.root(0, {'pom.xml', '.git', 'mvnw', 'gradlew'}),
+config['settings'] = {
+  java = {
+    references = {
+      includeDecompiledSources = true,
+    },
+    eclipse = {
+      downloadSources = true,
+    },
+    maven = {
+      downloadSources = true,
+    },
+    signatureHelp = { enabled = true },
+    sources = {
+      organizeImports = {
+        starThreshold = 9999,
+        staticStarThreshold = 9999,
+      },
+    },
+  }
+  }
+require('jdtls').start_or_attach(config)
 eof

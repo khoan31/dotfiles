@@ -95,6 +95,7 @@ set showmatch
 
 " the cursor is kept in the same column
 set nostartofline
+set regexpengine=2
 
 " this option controls the behavior when switching between buffers
 set switchbuf=uselast
@@ -153,7 +154,7 @@ nnoremap <leader>p "+p
 nnoremap <leader>P "+P
 vnoremap <leader>p "+p
 
-" Fuzzy find
+" fuzzy find
 nmap <leader>f :find **/*
 vmap <leader>f "0y:find **/*<c-r>0<c-z>
 nmap <leader>F :find **/*<c-r><c-w><c-z>
