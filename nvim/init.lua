@@ -38,7 +38,7 @@ vim.opt.splitbelow = true
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', eol = '¬', nbsp = '␣' }
+vim.opt.listchars = { tab = '⇀ ', trail = '·', eol = '¬', nbsp = '␣' }
 vim.opt.showbreak = '↪'
 
 -- Set default indentation
@@ -66,8 +66,8 @@ vim.opt.wildignore = '*.o,*~,*.a,*.so,*.pyc,*.swp,*/.git/*,*.class'
 vim.opt.cmdheight = 1
 vim.opt.paste = false
 
--- No global status
-vim.opt.laststatus = 2
+-- Global status
+vim.opt.laststatus = 3
 
 -- Basic theme
 vim.opt.background = 'dark'
@@ -75,7 +75,7 @@ vim.opt.termguicolors = true
 
 -- Program to use for the :grep command
 if vim.fn.executable('rg') > 0 then
-   vim.opt.grepprg = 'rg --vimgrep --smart-case --hidden --no-ignore'
+   vim.opt.grepprg = 'rg --vimgrep --no-heading --smart-case --column --hidden --no-ignore'
 else
    print('No ripgrep installation found!')
 end

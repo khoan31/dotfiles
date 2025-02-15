@@ -52,3 +52,6 @@ alias gp='git pull --rebase'
 alias gP='git push'
 alias gr='git reset --hard'
 alias gR='git clean --force'
+
+# Make neovim local vim
+alias vim=nvim
