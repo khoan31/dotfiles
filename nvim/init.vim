@@ -238,7 +238,7 @@ vmap <leader>f "0y:find **/*<c-r>0<c-z>
 nmap <leader>F :find **/*<c-r><c-w><c-z>
 nmap <leader>e :e %:p:h<c-z>
 nmap <leader>b :b <c-z>
-nmap <leader>b :bd <c-z>
+nmap <leader>B :bd <c-z>
 nmap <leader>j :jumps<cr>
 nmap <leader>m :marks<cr>
 nmap <leader>g :grep ''<left>

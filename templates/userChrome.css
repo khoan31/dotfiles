@@ -1,4 +1,4 @@
-/* Put this to ~/Library/Application Support/Firefox/Profiles/<firefox_profile>/chrome/, should be your default profile*/
+/* put this to ~/Library/Application Support/Firefox/Profiles/<firefox_profile>/chrome/, should be your default profile*/
 .tab-text.tab-label{
   font-size: 12px;
 }

@@ -22,16 +22,17 @@ if executable('mvn')
 
       if l:dirs[i] == 'src' && i - 1 >= 0
         let l:module = l:dirs[i - 1]
+        break
       endif
     endfor
 
     if !l:is_test
-      echo 'Not a test file!'
+      echo 'not a test file!'
       return
     endif
 
     if a:0 > 0
-      let l:class = l:class . '\#' . substitute(a:1, '\s', '', 'g')
+      let l:class .= '\#' . substitute(a:1, '\s', '', 'g')
     endif
 
     execute 'terminal mvn test -T 1C -pl :' . l:module . ' -Dtest=' . l:class . ' -DskipTests=false -Dgroups=small,medium'

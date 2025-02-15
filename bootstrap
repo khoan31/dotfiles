@@ -1,36 +1,32 @@
 #!/bin/bash
-# Install essential tools for my development environment
+## install essential tools for my development environment
+## -----
 
 if [[ "$OSTYPE" != "darwin"* ]]; then
-  echo "Unsupported OS."
+  echo "unsupported os."
   exit
 fi
 
 function init() {
-  echo "[-] Installing Xcode Command Line Tools [-]"
+  echo "[-] installing xcode command line tools [-]"
   xcode-select --install
 
   if ! hash brew &> /dev/null; then
-    echo "[-] Installing Homebrew [-]"
+    echo "[-] installing homebrew [-]"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
     eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 }
-
-# Setup initial tools
 init
 
-# Install prerequisite packages
-echo "[-] Installing some prerequisite packages [-]"
+echo "[-] installing some prerequisite packages [-]"
 brew update
 brew install curl wget git coreutils watch ncdu jq fd
 
-# Install font
-echo "[-] Installing Source Code Pro Font [-]"
+echo "[-] installing source code pro font [-]"
 brew install --cask font-jetbrains-mono-nerd-font
 
-# Backup dotfiles
 function backup() {
   local backup_dir=dotfiles-bak-$(date +%s)
 
@@ -38,10 +34,9 @@ function backup() {
   mv ~/.zshrc ~/$backup_dir/.zshrc
   mv ~/.zshenv ~/$backup_dir/.zshenv
 }
-echo "[-] Backing up dotfiles [-]"
+echo "[-] backing up dotfiles [-]"
 backup
 
-# Link dotfiles
 function linking() {
   ln -s $(pwd)/.zshrc ~/.zshrc
   ln -s $(pwd)/.zshenv ~/.zshenv
@@ -55,26 +50,20 @@ function linking() {
   ln -s $(pwd)/ghostty $XDG_CONFIG_HOME/ghostty
   ln -s $(pwd)/scripts ~/scripts
 }
-echo "[-] Linking dotfiles [-]"
+echo "[-] linking dotfiles [-]"
 linking
 
-# Install some extended packages
-echo "[-] Installing extended packages [-]"
+echo "[-] installing extended packages [-]"
 brew install zsh-autosuggestions parallel ripgrep fzf
 brew install neovim httpie pyenv universal-ctags
 
-# Download git-prompt.sh script
-echo "[-] Downloading git-prompt.sh script [-]"
+echo "[-] downloading git-prompt.sh script [-]"
 mkdir -p ~/.zsh/plugins/git/
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.zsh/plugins/git/git-prompt.sh
 
-# Install default terminal emulator
-echo "[-] Installing Ghostty [-]"
+echo "[-] installing ghostty [-]"
 brew install ghostty
 
-# Change default shell
-# echo "[-] Change default shell to Zsh [-]"
+# echo "[-] change default shell to zsh [-]"
 # chsh -s $(which zsh)
-
-# Notify configuration finished
 echo "[-] Setup done. Run \`source ~/.zshrc\` to refresh shell config [-]"

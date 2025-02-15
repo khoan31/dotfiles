@@ -1,11 +1,11 @@
 #!/bin/bash
 #vim:ft=bash
 
-# Get env vars
+# get env vars
 jdk=$JAVA_HOME
 root=$IC_REPO/java
 
-# Get args
+# get args
 module=$1
 path=${2:-""}  # must include trailing / in the path if specified
 

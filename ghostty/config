@@ -1,12 +1,12 @@
-# Theme and Font
+# theme and font
 term = xterm-256color
 theme = xcodedarkhc
-font-family = JetBrainsMonoNL Nerd Font Mono
+font-family = jetbrainsmononl nerd font mono
 font-style = Regular
 font-thicken = true
 font-size = 15
 
-# Cursor
+# cursor
 cursor-style = block
 cursor-style-blink = true
 selection-invert-fg-bg = true
@@ -15,22 +15,22 @@ adjust-cursor-thickness = 3
 adjust-underline-thickness = 2
 adjust-strikethrough-thickness = 2
 
-# Window
+# window
 window-padding-x = 10,10
 window-padding-y = 5,5
 window-padding-balance = true
 window-padding-color = background
 window-theme = dark
-window-title-font-family = JetBrains Mono NL
+window-title-font-family = jetbrains mono nl
 window-vsync = true
 bold-is-bright = true
 
-# MacOS
+# macos
 macos-titlebar-style = transparent
 macos-titlebar-proxy-icon = hidden
 macos-option-as-alt = true
 macos-window-shadow = true
 
-# Shell Integration
+# shell integration
 shell-integration = zsh
 shell-integration-features = no-cursor

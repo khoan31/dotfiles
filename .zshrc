@@ -1,26 +1,28 @@
-# Zsh configuration
-# Initialize autocompletion
+# zsh configuration
+# -----
+
+# initialize autocompletion
 setopt auto_cd
 autoload -Uz compinit; compinit
 
-# Set up history
+# set up history
 setopt SHARE_HISTORY
 setopt HIST_EXPIRE_DUPS_FIRST
 setopt EXTENDED_HISTORY
 setopt NO_BEEP
-# Use emacs keybinding
+# use emacs keybinding
 bindkey -e
 
-# Autocompletion (based on history)
+# autocompletion (based on history)
 bindkey '\e[A' history-beginning-search-backward
 bindkey '\e[B' history-beginning-search-forward
 bindkey '^P' history-beginning-search-backward
 bindkey '^N' history-beginning-search-forward
 
-# Enable git prompt
+# enable git prompt
 source ~/.zsh/plugins/git/git-prompt.sh
 
-# Git prompt options
+# git prompt options
 GIT_PS1_SHOWDIRTYSTATE=true
 GIT_PS1_SHOWSTASHSTATE=true
 GIT_PS1_SHOWUNTRACKEDFILES=true
@@ -28,18 +30,18 @@ GIT_PS1_SHOWUPSTREAM='verbose'
 GIT_PS1_HIDE_IF_PWD_IGNORED=true
 GIT_PS1_COMPRESSSPARSESTATE=true
 
-# Enable command-subsitution in PS1
+# enable command-subsitution in ps1
 setopt PROMPT_SUBST
 NL=$'\n'
 PS1='$NL%B%F{cyan}%0~%f%b% %F{magenta}$(__git_ps1 "  %s")%f$NL%B%(?.%F{green}.%F{red})%(!.#.$)%f%b '
 
-# Source .profile
+# source .profile
 source $HOME/.profile
 
-# Activate autosuggestions
+# activate autosuggestions
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# Aliases
+# aliases
 alias gs='git status'
 alias ga='git add .'
 alias gA='git restore --staged'
@@ -53,5 +55,5 @@ alias gP='git push'
 alias gr='git reset --hard'
 alias gR='git clean --force'
 
-# Make neovim local vim
+# make neovim local vim
 alias vim=nvim

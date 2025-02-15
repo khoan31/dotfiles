@@ -1,60 +1,60 @@
 " .ideavimrc is a configuration file for IdeaVim plugin. It uses
 "   the same commands as the original .vimrc configuration.
-" You can find a list of commands here: https://jb.gg/h38q75
-" Find more examples here: https://jb.gg/share-ideavimrc
+" you can find a list of commands here: https://jb.gg/h38q75
+" find more examples here: https://jb.gg/share-ideavimrc
 
-" Source your .vimrc
+" source your .vimrc
 source ~/.vimrc
 
-" --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
+" --- enable ideavim plugins https://jb.gg/ideavim-plugins
 set commentary
 set highlightedyank
 
-" IDE specific options
+" ide specific options
 set ideajoin
 set ideastatusicon=gray
 
-" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
-" Fuzzy find stuff
-nnoremap <leader>f :action GotoFile<CR>
-vnoremap <leader>f :action GotoFile<CR>
-nnoremap <leader>F :action GotoClass<CR>
-vnoremap <leader>F :action GotoClass<CR>
-nnoremap <leader>g :action FindInPath<CR>
-vnoremap <leader>g :action FindInPath<CR>
-nnoremap <leader>s :action SearchEverywhere<CR>
-vnoremap <leader>s :action SearchEverywhere<CR>
+" -- map ide actions to ideavim -- https://jb.gg/abva4t
+" fuzzy find stuff
+nnoremap <leader>f :action GotoFile<cr>
+vnoremap <leader>f :action GotoFile<cr>
+nnoremap <leader>F :action GotoClass<cr>
+vnoremap <leader>F :action GotoClass<cr>
+nnoremap <leader>g :action FindInPath<cr>
+vnoremap <leader>g :action FindInPath<cr>
+nnoremap <leader>s :action SearchEverywhere<cr>
+vnoremap <leader>s :action SearchEverywhere<cr>
 
-" Buffer switching
-nnoremap <leader>b :action Switcher<CR>
-nnoremap <leader>B :action SwitcherAndRecentFiles<CR>
+" buffer switching
+nnoremap <leader>b :action Switcher<cr>
+nnoremap <leader>B :action SwitcherAndRecentFiles<cr>
 
-" Code styles
-nnoremap <silent> gq :action ReformatCode<CR>
-vnoremap <silent> gq :action ReformatCode<CR>
+" code styles
+nnoremap <silent> gq :action ReformatCode<cr>
+vnoremap <silent> gq :action ReformatCode<cr>
 
-" Jump around
-nnoremap gd :action GotoDeclaration<CR>
-nnoremap gD :action GotoTypeDeclaration<CR>
-nnoremap gi :action GotoImplementation<CR>
-nnoremap gt :action GotoTest<CR>
-nnoremap gr :action FindUsages<CR>
-vnoremap gr :action FindUsages<CR>
+" jump around
+nnoremap gd :action GotoDeclaration<cr>
+nnoremap gD :action GotoTypeDeclaration<cr>
+nnoremap gi :action GotoImplementation<cr>
+nnoremap gt :action GotoTest<cr>
+nnoremap gr :action FindUsages<cr>
+vnoremap gr :action FindUsages<cr>
 
-" Run stuff
-nnoremap gx :action RunMenu<CR>
-nnoremap gX :action RunClass<CR>
+" run stuff
+nnoremap gx :action RunMenu<cr>
+nnoremap gX :action RunClass<cr>
 
-" Code actions
-nnoremap ga :action GotoAction<CR>
-nnoremap K :action ShowHoverInfo<CR>
+" code actions
+nnoremap ga :action GotoAction<cr>
+nnoremap K :action ShowHoverInfo<cr>
 
-" Project view
-nnoremap - :action SelectInProjectView<CR>
+" project view
+nnoremap - :action SelectInProjectView<cr>
 
-" Hide all windows
-nnoremap X :action HideAllWindows<CR>
+" hide all windows
+nnoremap X :action HideAllWindows<cr>
 
-" Diagnostics navigation
-nnoremap ]d :action GotoNextError<CR>
-nnoremap [d :action GotoPreviousError<CR>
+" diagnostics navigation
+nnoremap ]d :action GotoNextError<cr>
+nnoremap [d :action GotoPreviousError<cr>
