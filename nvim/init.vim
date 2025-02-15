@@ -153,9 +153,11 @@ call plug#end()
 " create session directory if not exist
 function! s:get_session_dir() abort
   let l:session_dir = stdpath('data') . '/sessions'
+
   if !isdirectory(l:session_dir)
     call mkdir(l:session_dir, 'p')
   endif
+
   return l:session_dir
 endfunction
 
@@ -164,10 +166,13 @@ function! s:auto_make_session() abort
   if !empty(argv()) && argv(0) != getcwd()
     return
   endif
+
   let l:session_dir = <sid>get_session_dir()
   let l:session_name = fnamemodify(getcwd(), ':p:h:t')
+
   execute 'silent! mksession! ' . l:session_dir . '/' . l:session_name . '.vim'
 endfunction
+
 augroup vim_sessionizer
   autocmd!
   autocmd BufWritePost,VimLeavePre * call <sid>auto_make_session()
@@ -178,9 +183,11 @@ function! s:auto_source_session() abort
   if !empty(argv()) && argv(0) != getcwd()
     return
   endif
+
   let l:session_dir = <sid>get_session_dir()
   let l:session_name = fnamemodify(getcwd(), ':p:h:t')
   let l:session_file = l:session_dir . '/' . l:session_name . '.vim'
+
   if filereadable(l:session_file)
     let l:choice = confirm("", "load last session? &yes\n&no\n&clear", 2, "Question")
     if l:choice == 1
@@ -190,6 +197,7 @@ function! s:auto_source_session() abort
     endif
   endif
 endfunction
+
 augroup vim_session
   autocmd!
   autocmd VimEnter * call <sid>auto_source_session()
@@ -267,15 +275,18 @@ lua require('mason').setup()
 " telescope
 lua require('telescope').setup({defaults={layout_strategy='bottom_pane',layout_config={height=0.41,preview_cutoff=543}}})
 " keymaps
+" files
 nnoremap <leader>f <cmd>lua require('telescope.builtin').find_files()<cr>
 vnoremap <leader>f "0y:lua require('telescope.builtin').find_files({search_file='<c-r>0'})<cr>
 nnoremap <leader>F <cmd>lua require('telescope.builtin').find_files({search_file=vim.fn.expand('<cword>')})<cr>
 nnoremap <leader>s <cmd>lua require('telescope.builtin').git_files()<cr>
-nnoremap <leader>j <cmd>lua require('telescope.builtin').jumplist()<cr>
-nnoremap <leader>m <cmd>lua require('telescope.builtin').marks()<cr>
+" grep
 nnoremap <leader>g <cmd>lua require('telescope.builtin').live_grep()<cr>
 vnoremap <leader>g "0y:lua require('telescope.builtin').grep_string({search='<c-r>0'})<cr>
 nnoremap <leader>G <cmd>lua require('telescope.builtin').grep_string({search=vim.fn.expand('<cword>')})<cr>
+" misc
+nnoremap <leader>j <cmd>lua require('telescope.builtin').jumplist()<cr>
+nnoremap <leader>m <cmd>lua require('telescope.builtin').marks()<cr>
 nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
 nnoremap <leader>o <cmd>lua require('telescope.builtin').resume()<cr>
 

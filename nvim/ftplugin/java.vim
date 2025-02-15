@@ -39,7 +39,7 @@ if executable('mvn')
     execute 'terminal mvn test -T 1C -pl :' . l:module . ' -Dtest=' . l:class . ' -DskipTests=false -Dgroups=small,medium'
   endfunction
 
-  command! -nargs=? MvnTest call <SID>run_mvn_test(<f-args>)
+  command! -nargs=? MvnTest call <sid>run_mvn_test(<f-args>)
 endif
 
 " lsp
