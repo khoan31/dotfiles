@@ -88,10 +88,13 @@ require('keymaps')
 require('autocmds')
 require('plugins')
 
+-- Custom statusline
+vim.o.statusline = require('statusline').default()
+
 -- Highlight marked files in the same way search matches are
 vim.api.nvim_set_hl(0, 'netrwMarkFile', { link = 'Search' })
 
 -- Basic highlights
 vim.api.nvim_set_hl(0, 'Statusline', { bg = 'NONE', fg = 'darkgrey' })
-vim.api.nvim_set_hl(0, 'StatuslineNC', { bg = 'NONE', fg= 'grey' })
-vim.api.nvim_set_hl(0, 'VertSplit', { bg = 'NONE', fg= 'darkgrey' })
+vim.api.nvim_set_hl(0, 'StatuslineNC', { bg = 'NONE', fg = 'grey' })
+vim.api.nvim_set_hl(0, 'VertSplit', { bg = 'NONE', fg = 'darkgrey' })

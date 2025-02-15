@@ -7,20 +7,6 @@ function M.make_cfg()
          vim.lsp.inlay_hint.enable(true)
          vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = false })
 
-         -- Diagnostic signs
-         vim.diagnostic.config({
-            virtual_text = true,
-            signs = {
-               text = {
-                  [vim.diagnostic.severity.ERROR] = '■',
-                  [vim.diagnostic.severity.WARN] = '▲',
-                  [vim.diagnostic.severity.INFO] = '●',
-                  [vim.diagnostic.severity.HINT] = '◆',
-               }
-            },
-            underline = false,
-         })
-
          -- Mappings.
          -- See `:help vim.lsp.*` for documentation on any of the below functions
 
@@ -54,12 +40,30 @@ function M.make_cfg()
             { desc = 'Show [s]ignature help', buffer = bufnr })
 
          -- Diagnostic keymaps
-         vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open [d]iagnostic float' })
+         vim.keymap.set('n', '<leader>k', vim.diagnostic.open_float, { desc = 'Open [k]eyword diagnostic float' })
          vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = 1, float = false }) end,
             { desc = 'Prev [d]iagnostic' })
          vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = -1, float = false }) end,
             { desc = 'Next [d]iagnostic' })
-         vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [q]uickfix list' })
+         vim.keymap.set('n', '<leader>d', function()
+            local diagnostics = vim.diagnostic.get(0, { severity = { min = vim.diagnostic.severity.WARN } })
+            vim.diagnostic.setloclist(vim.diagnostic.toqflist(diagnostics))
+         end, { desc = 'Add buffer [d]iagnostics to location list' })
+
+         -- Diagnostic signs
+         vim.diagnostic.config({
+            virtual_text = true,
+            underline = false,
+            float = false,
+            signs = {
+               text = {
+                  [vim.diagnostic.severity.ERROR] = '↯',
+                  [vim.diagnostic.severity.WARN] = '↺',
+                  [vim.diagnostic.severity.INFO] = '⇌',
+                  [vim.diagnostic.severity.HINT] = '↝',
+               }
+            },
+         })
       end,
       detached = true,
    }
