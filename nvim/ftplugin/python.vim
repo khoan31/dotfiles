@@ -1,9 +1,11 @@
+" indent
 set expandtab
 set shiftwidth=4
 set tabstop=4
 set softtabstop=4
 
-lua << EOF
+" lsp
+lua << eof
 local common = require('common')
 local config = require('lsp').make_cfg()
 
@@ -26,4 +28,4 @@ common.run_async(function()
    vim.lsp.start(config)
    coroutine.yield()
 end)
-EOF
+eof

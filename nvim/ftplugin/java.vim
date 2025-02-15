@@ -1,9 +1,10 @@
+" indent
 set expandtab
 set shiftwidth=4
 set tabstop=4
 set softtabstop=4
 
-" Maven test
+" maven test
 if executable('mvn')
   function! s:run_mvn_test(...) abort
     let l:file_path = expand('%:p')
@@ -41,7 +42,8 @@ if executable('mvn')
   command! -nargs=? MvnTest call <SID>run_mvn_test(<f-args>)
 endif
 
-lua << EOF
+" lsp
+lua << eof
 local common = require('common')
 local config = require('lsp').make_cfg()
 
@@ -67,8 +69,7 @@ common.run_async(function()
       '-configuration', jdtls .. '/config_mac_arm',
       '-data', workspace_dir,
    }
-   -- root_dir = vim.fs.root(0, {'pom.xml', '.git', 'mvnw', 'gradlew'}),
-   config['root_dir'] = vim.fn.getcwd()
+   config['root_dir'] = vim.fn.getcwd() -- or vim.fs.root(0, {'pom.xml', '.git', 'mvnw', 'gradlew'}),
    config['settings'] = {
       java = {
          references = {
@@ -93,4 +94,4 @@ common.run_async(function()
    require('jdtls').start_or_attach(config)
    coroutine.yield()
 end)
-EOF
+eof
