@@ -200,7 +200,6 @@ augroup END
 " keymaps
 " ==============================================================================
 nnoremap <silent> <esc> :nohlsearch<cr>
-tnoremap <silent> <esc><esc> <c-\><c-n>
 
 " Use ctrl+<hjkl> to switch between windows
 nnoremap <c-h> <c-w>h

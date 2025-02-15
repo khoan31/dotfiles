@@ -1,13 +1,51 @@
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+
+" Maven test
+if executable('mvn')
+  function! s:run_mvn_test(...) abort
+    let l:file_path = expand('%:p')
+    let l:dirs = split(l:file_path, '/')
+
+    let l:is_test = v:false
+    let l:module = ''
+    let l:class = ''
+
+    for i in range(len(l:dirs) - 1, 0, -1)
+      if l:dirs[i] == 'test'
+        let l:is_test = v:true
+        let l:class = join(slice(l:dirs, i + 2, len(l:dirs)), '.')
+        let l:class = substitute(l:class, '\.java$', '', '')
+      endif
+
+      if l:dirs[i] == 'src' && i - 1 >= 0
+        let l:module = l:dirs[i - 1]
+      endif
+    endfor
+
+    if !l:is_test
+      echo 'Not a test file!'
+      return
+    endif
+
+    if a:0 > 0
+      let l:class = l:class . '\#' . substitute(a:1, '\s', '', 'g')
+    endif
+
+    execute 'terminal mvn test -T 1C -pl :' . l:module . ' -Dtest=' . l:class . ' -DskipTests=false -Dgroups=small,medium'
+  endfunction
+
+  command! -nargs=? MvnTest call <SID>run_mvn_test(<f-args>)
+endif
+
+lua << EOF
 local common = require('common')
 local config = require('lsp').make_cfg()
 
 common.run_async(function()
    assert(coroutine.running())
-   vim.opt.expandtab = true
-   vim.opt.shiftwidth = 4
-   vim.opt.tabstop = 4
-   vim.opt.softtabstop = 4
-
    local data_home = os.getenv('XDG_DATA_HOME')
    local workspace_dir = data_home .. '/jdtls/workspace/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
    local jdtls = data_home .. '/nvim/mason/packages/jdtls'
@@ -50,43 +88,8 @@ common.run_async(function()
          },
       }
    }
+
    require('jdtls').start_or_attach(config)
-
-   -- Maven test
-   if vim.fn.executable('mvn') > 0 then
-      vim.api.nvim_create_user_command('MvnTest', function(opts)
-         local file_path = vim.fn.expand('%:p')
-         local dirs = vim.split(file_path, '/')
-
-         local is_test = false
-         local module = ''
-         local class = ''
-
-         for i = #dirs, 1, -1 do
-            if dirs[i] == 'test' then
-               is_test = true
-               class = table.concat(vim.list_slice(dirs, i + 2, #dirs), '.')
-               class = class:gsub('%.java$', '')
-            end
-
-            if dirs[i] == 'src' and i - 1 >= 1 then
-               module = dirs[i - 1]
-            end
-         end
-
-         if not is_test then
-            print('Not a test file!')
-            return
-         end
-
-         if opts.args and not opts.args:match('^%s*$') then
-            class = string.format('%s\\#%s', class, opts.args:gsub('%s+', ''))
-         end
-
-         vim.cmd(string.format('terminal mvn test -T 1C -pl :%s -Dtest=%s -DskipTests=false -Dgroups=small,medium',
-            module,
-            class))
-      end, { nargs = '?' })
-   end
    coroutine.yield()
 end)
+EOF

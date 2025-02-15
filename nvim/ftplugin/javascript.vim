@@ -1,12 +1,14 @@
+set expandtab
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
+
+lua << EOF
 local common = require('common')
 local config = require('lsp').make_cfg()
 
 common.run_async(function()
    assert(coroutine.running())
-   vim.opt.expandtab = true
-   vim.opt.shiftwidth = 2
-   vim.opt.tabstop = 2
-   vim.opt.softtabstop = 2
 
    config['name'] = 'tsserver'
    config['cmd'] = { 'typescript-language-server', '--stdio' }
@@ -16,3 +18,4 @@ common.run_async(function()
    vim.lsp.start(config)
    coroutine.yield()
 end)
+EOF

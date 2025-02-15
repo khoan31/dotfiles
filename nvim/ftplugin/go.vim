@@ -1,12 +1,14 @@
+set noexpandtab
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+
+lua << EOF
 local common = require('common')
 local config = require('lsp').make_cfg()
 
 common.run_async(function()
    assert(coroutine.running())
-   vim.opt.expandtab = false
-   vim.opt.shiftwidth = 4
-   vim.opt.tabstop = 4
-   vim.opt.softtabstop = 4
 
    config['name'] = 'gopls'
    config['cmd'] = { 'gopls' }
@@ -15,3 +17,4 @@ common.run_async(function()
    vim.lsp.start(config)
    coroutine.yield()
 end)
+EOF

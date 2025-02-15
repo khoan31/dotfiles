@@ -1,12 +1,14 @@
+set expandtab
+set shiftwidth=3
+set tabstop=3
+set softtabstop=3
+
+lua << EOF
 local common = require('common')
 local config = require('lsp').make_cfg()
 
 common.run_async(function()
    assert(coroutine.running())
-   vim.opt.expandtab = true
-   vim.opt.shiftwidth = 3
-   vim.opt.tabstop = 3
-   vim.opt.softtabstop = 3
 
    config['name'] = 'luals'
    config['cmd'] = { 'lua-language-server' }
@@ -26,3 +28,4 @@ common.run_async(function()
    vim.lsp.start(config)
    coroutine.yield()
 end)
+EOF
