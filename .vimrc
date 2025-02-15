@@ -39,7 +39,7 @@ syntax enable
 " Show invisible characters
 set list
 " Set the characters for the invisibles
-set listchars=tab:ǀ\ ,eol:¬,nbsp:␣,trail:⋅
+set listchars=tab:⇀\ ,eol:¬,nbsp:␣,trail:⋅
 set showbreak=↪
 
 " Auto copy indent and auto read file change

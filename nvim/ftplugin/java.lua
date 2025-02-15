@@ -1,5 +1,5 @@
-local common = require('utils.common')
--- local config = require('utils.lsp').make_cfg()
+local common = require('common')
+local config = require('lsp').make_cfg()
 
 common.run_async(function()
    assert(coroutine.running())
@@ -12,47 +12,45 @@ common.run_async(function()
    local workspace_dir = data_home .. '/jdtls/workspace/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
    local jdtls = data_home .. '/nvim/mason/packages/jdtls'
 
-   require('jdtls').start_or_attach({
-      name = 'jdtls',
-      cmd = {
-         os.getenv('JDK21') .. '/bin/java',
-         '-Declipse.application=org.eclipse.jdt.ls.core.id1',
-         '-Dosgi.bundles.defaultStartLevel=4',
-         '-Declipse.product=org.eclipse.jdt.ls.core.product',
-         '-Dlog.protocol=true',
-         '-Dlog.level=ALL',
-         '-Xmx2g',
-         '--add-modules=ALL-SYSTEM',
-         '--add-opens', 'java.base/java.util=ALL-UNNAMED',
-         '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
-         '-jar', vim.fn.glob(jdtls .. '/plugins/org.eclipse.equinox.launcher_*.jar'),
-         '-configuration', jdtls .. '/config_mac_arm',
-         '-data', workspace_dir,
-      },
-      -- root_dir = vim.fs.root(0, {'pom.xml', '.git', 'mvnw', 'gradlew'}),
-      root_dir = vim.fn.getcwd(),
-      settings = {
-         java = {
-            references = {
-               includeDecompiledSources = true,
+   config['name'] = 'jdtls'
+   config['cmd'] = {
+      os.getenv('JDK21') .. '/bin/java',
+      '-Declipse.application=org.eclipse.jdt.ls.core.id1',
+      '-Dosgi.bundles.defaultStartLevel=4',
+      '-Declipse.product=org.eclipse.jdt.ls.core.product',
+      '-Dlog.protocol=true',
+      '-Dlog.level=ALL',
+      '-Xmx2g',
+      '--add-modules=ALL-SYSTEM',
+      '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+      '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+      '-jar', vim.fn.glob(jdtls .. '/plugins/org.eclipse.equinox.launcher_*.jar'),
+      '-configuration', jdtls .. '/config_mac_arm',
+      '-data', workspace_dir,
+   }
+   -- root_dir = vim.fs.root(0, {'pom.xml', '.git', 'mvnw', 'gradlew'}),
+   config['root_dir'] = vim.fn.getcwd()
+   config['settings'] = {
+      java = {
+         references = {
+            includeDecompiledSources = true,
+         },
+         eclipse = {
+            downloadSources = true,
+         },
+         maven = {
+            downloadSources = true,
+         },
+         signatureHelp = { enabled = true },
+         sources = {
+            organizeImports = {
+               starThreshold = 9999,
+               staticStarThreshold = 9999,
             },
-            eclipse = {
-               downloadSources = true,
-            },
-            maven = {
-               downloadSources = true,
-            },
-            signatureHelp = { enabled = true },
-            sources = {
-               organizeImports = {
-                  starThreshold = 9999,
-                  staticStarThreshold = 9999,
-               },
-            },
-         }
-      },
-      on_attach = require('utils.lsp').make_cfg().on_attach
-   })
+         },
+      }
+   }
+   require('jdtls').start_or_attach(config)
 
    -- Maven test
    if vim.fn.executable('mvn') > 0 then

@@ -1,5 +1,5 @@
-local common = require('utils.common')
-local config = require('utils.lsp').make_cfg()
+local common = require('common')
+local config = require('lsp').make_cfg()
 
 common.run_async(function()
    assert(coroutine.running())
