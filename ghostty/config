@@ -1,6 +1,6 @@
 # Theme and Font
 term = xterm-256color
-theme = oxocarbon
+theme = xcodedarkhc
 font-family = JetBrainsMonoNL Nerd Font Mono
 font-style = Regular
 font-thicken = true

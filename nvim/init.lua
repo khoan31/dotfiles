@@ -38,7 +38,7 @@ vim.opt.splitbelow = true
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 vim.opt.list = true
-vim.opt.listchars = { tab = 'ǀ ', trail = '·', eol = '¬', nbsp = '␣' }
+vim.opt.listchars = { tab = '» ', trail = '·', eol = '¬', nbsp = '␣' }
 vim.opt.showbreak = '↪'
 
 -- Set default indentation
@@ -94,3 +94,4 @@ vim.api.nvim_set_hl(0, 'netrwMarkFile', { link = 'Search' })
 -- Basic highlights
 vim.api.nvim_set_hl(0, 'Statusline', { bg = 'NONE', fg = 'darkgrey' })
 vim.api.nvim_set_hl(0, 'StatuslineNC', { bg = 'NONE', fg= 'grey' })
+vim.api.nvim_set_hl(0, 'VertSplit', { bg = 'NONE', fg= 'darkgrey' })

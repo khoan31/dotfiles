@@ -2,7 +2,25 @@ local M = {}
 
 function M.make_cfg()
    return {
-      on_attach = function(_, bufnr)
+      on_attach = function(client, bufnr)
+         -- Enalbe inlay hint and autocompletion
+         vim.lsp.inlay_hint.enable(true)
+         vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = false })
+
+         -- Diagnostic signs
+         vim.diagnostic.config({
+            virtual_text = true,
+            signs = {
+               text = {
+                  [vim.diagnostic.severity.ERROR] = '■',
+                  [vim.diagnostic.severity.WARN] = '▲',
+                  [vim.diagnostic.severity.INFO] = '●',
+                  [vim.diagnostic.severity.HINT] = '◆',
+               }
+            },
+            underline = false,
+         })
+
          -- Mappings.
          -- See `:help vim.lsp.*` for documentation on any of the below functions
 
@@ -37,36 +55,13 @@ function M.make_cfg()
 
          -- Diagnostic keymaps
          vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open [d]iagnostic float' })
-         vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Prev [d]iagnostic' })
-         vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next [d]iagnostic' })
+         vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = 1, float = false }) end,
+            { desc = 'Prev [d]iagnostic' })
+         vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = -1, float = false }) end,
+            { desc = 'Next [d]iagnostic' })
          vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [q]uickfix list' })
-
-         -- Diagnostic sign symbols
-         vim.lsp.handlers['textDocument/publishDiagnostics'] =
-             vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-                underline = false,
-                virtual_text = {
-                   prefix = '†',
-                   spacing = 2,
-                },
-                update_in_insert = false,
-                severity_sort = true,
-             })
-
-         -- Diagnostic signs
-         vim.diagnostic.config({
-            signs = {
-               text = {
-                  [vim.diagnostic.severity.ERROR] = '■',
-                  [vim.diagnostic.severity.WARN] = '▲',
-                  [vim.diagnostic.severity.INFO] = '●',
-                  [vim.diagnostic.severity.HINT] = '◆',
-               }
-            }
-         })
       end,
-      autostart = false,
-      single_file_support = true,
+      detached = true,
    }
 end
 

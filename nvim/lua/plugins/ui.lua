@@ -1,8 +1,8 @@
 return {
    {
-      'nyoom-engineering/oxocarbon.nvim',
+      'lunacookies/vim-colors-xcode',
       config = function()
-         vim.cmd.colorscheme 'oxocarbon'
+         vim.cmd.colorscheme 'xcodedarkhc'
       end
    },
    {
