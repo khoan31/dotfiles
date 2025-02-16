@@ -2,17 +2,11 @@ vim9script
 # disable compatibility with vi which can cause unexpected issues.
 set nocompatible
 
-# quick exit some filetypes
-augroup quick_exit_filetypes
-  autocmd!
-  autocmd FileType help,qf,diff nnoremap <silent> <buffer> q :q<cr>
-augroup END
-
 # open the quickfix window whenever a quickfix command is executed
-augroup quickfix_window
-  autocmd!
-  autocmd QuickFixCmdPost [^l]* cwindow
-augroup END
+autocmd! QuickFixCmdPost [^l]* cwindow
+
+# quick exit some filetypes
+autocmd! FileType help,qf,diff,fugitive,fugitiveblame,dbout,lspgfm nnoremap <silent> <buffer> q :q<cr>
 
 # ==============================================================================
 # general settings / options
@@ -113,10 +107,13 @@ set cursorline
 set switchbuf=uselast
 set tabpagemax=50
 
-# get rid of scratch buffer
-set completeopt-=preview
+# timeout behaviour
 set ttimeout
 set ttimeoutlen=50
+# decrease update time
+set updatetime=250
+# decrease mapped sequence wait time
+set timeoutlen=300
 
 # set the commands to save in history default number is 20.
 set history=10000
@@ -159,9 +156,6 @@ call plug#begin()
 
 # make sure you use single quotes
 
-# xcode colourscheme for vim 
-Plug 'lunacookies/vim-colors-xcode'
-
 # a git wrapper so awesome, it should be illegal
 Plug 'tpope/vim-fugitive'
 
@@ -170,6 +164,9 @@ Plug 'tpope/vim-commentary'
 
 # delete/change/add parentheses/quotes/xml-tags/much more with ease
 Plug 'tpope/vim-surround'
+
+# language server protocol (lsp) plugin for vim9
+Plug 'yegappan/lsp'
 
 # modern database interface for vim
 Plug 'tpope/vim-dadbod'
@@ -188,10 +185,6 @@ call plug#end()
 # ==============================================================================
 # keymaps
 # ==============================================================================
-# clear search highlighting
-nnoremap <silent> <esc> :nohlsearch<cr>
-tnoremap <silent> <esc> :nohlsearch<cr>
-
 # use ctrl+<hjkl> to switch between windows
 nnoremap <c-h> <c-w>h
 nnoremap <c-j> <c-w>j
@@ -202,6 +195,10 @@ tnoremap <c-h> <c-\><c-n><c-w>h
 tnoremap <c-j> <c-\><c-n><c-w>j
 tnoremap <c-k> <c-\><c-n><c-w>k
 tnoremap <c-l> <c-\><c-n><c-w>l
+
+# clear search highlighting
+nnoremap <silent> <esc> :nohlsearch<cr>
+tnoremap <silent> <esc><esc> <c-\><c-n>
 
 # re-size split windows using arrow keys
 nnoremap <silent> <up> :resize -2<cr>
@@ -298,7 +295,7 @@ def GetSessionDir(): string
 enddef
 
 # make session automatically when save a buffer or exit vim
-def AutoMakeSession(): void
+def VimAutoSessionizer(): void
   if !empty(argv()) && argv(0) != getcwd()
     return
   endif
@@ -308,13 +305,10 @@ def AutoMakeSession(): void
 
   execute 'silent! mksession! ' .. session_dir .. '/' .. session_name .. '.vim'
 enddef
-augroup vim_sessionizer
-  autocmd!
-  autocmd BufWritePost,VimLeavePre * AutoMakeSession()
-augroup END
+autocmd! BufWritePost,VimLeavePre * call VimAutoSessionizer()
 
 # load session automatically when start vim
-def AutoSourceSession(): void
+def VimAutoSession(): void
   if !empty(argv()) && argv(0) != getcwd()
     return
   endif
@@ -332,17 +326,58 @@ def AutoSourceSession(): void
     endif
   endif
 enddef
-augroup vim_session
-  autocmd!
-  autocmd VimEnter * AutoSourceSession()
-augroup END
+autocmd! VimEnter * call VimAutoSession()
 
 # ==============================================================================
 # plugins configuration
 # ==============================================================================
 # color schemes should be loaded after plug#end().
 # we prepend it with 'silent!' to ignore errors when it's not yet installed.
-silent! colorscheme xcodedarkhc
+silent! colorscheme habamax
+
+# lsp features
+var lsp_opts = {
+  autoComplete: v:false,
+  diagSignErrorText: '↯',
+  diagSignHintText: '↝',
+  diagSignInfoText: '⇌',
+  diagSignWarningText: '↺',
+  hoverInPreview: v:true,
+  omniComplete: v:true,
+  showSignature: v:false,
+}
+autocmd User LspSetup call LspOptionsSet(lsp_opts)
+# lsp
+var lsp_servers = [{
+  name: 'pyright',
+  filetype: 'python',
+  path: 'pyright-langserver',
+  args: ['--stdio']
+}, {
+  name: 'tsserver',
+  filetype: ['javascript', 'typescript'],
+  path: 'typescript-language-server',
+  args: ['--stdio'],
+}]
+autocmd User LspSetup call LspAddServer(lsp_servers)
+# goto
+nnoremap gd :LspGotoDefinition<cr>
+nnoremap gD :LspGotoDeclaration<cr>
+nnoremap gy :LspGotoTypeDef<cr>
+nnoremap gi :LspGotoImpl<cr>
+nnoremap gr :LspShowReferences<cr>
+# action
+nnoremap K :LspHover<cr>
+nnoremap ga :LspCodeAction<cr>
+nnoremap gR :LspRename<cr>
+nnoremap gq :LspFormat<cr>
+vnoremap gq :LspFormat<cr>
+nnoremap <c-s> :LspShowSignature<cr>
+# diagnostics
+nnoremap ]d :LspDiagNext<cr>
+nnoremap [d :LspDiagPrev<cr>
+nnoremap <leader>k :LspDiagCurrent<cr>
+nnoremap <leader>d :LspDiagShow<cr>
 
 # disable copilot by default
 g:copilot_enabled = 0
@@ -350,6 +385,11 @@ g:copilot_enabled = 0
 # ==============================================================================
 # highlights
 # ==============================================================================
+highlight Normal cterm=NONE guibg=NONE
+highlight NormalNC cterm=NONE guibg=NONE
+highlight Statusline cterm=NONE guibg=NONE guifg=grey
+highlight StatuslineNC cterm=NONE guibg=NONE guifg=darkgrey
+highlight VertSplit cterm=NONE guibg=NONE guifg=darkgrey
 highlight link netrwMarkFile Search
 
 # compile funcs
