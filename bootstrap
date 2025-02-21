@@ -46,16 +46,14 @@ function linking() {
   ln -s $(pwd)/.ideavimrc ~/.ideavimrc
 
   mkdir -p ${XDG_CONFIG_HOME:=~/.config}
-  ln -s $(pwd)/nvim $XDG_CONFIG_HOME/nvim
   ln -s $(pwd)/ghostty $XDG_CONFIG_HOME/ghostty
-  ln -s $(pwd)/scripts ~/scripts
 }
 echo "[-] linking dotfiles [-]"
 linking
 
 echo "[-] installing extended packages [-]"
 brew install zsh-autosuggestions parallel ripgrep fzf
-brew install neovim httpie pyenv universal-ctags
+brew install httpie pyenv universal-ctags
 
 echo "[-] downloading git-prompt.sh script [-]"
 mkdir -p ~/.zsh/plugins/git/

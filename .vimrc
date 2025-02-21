@@ -15,10 +15,10 @@ set encoding=utf-8
 set fileencoding=utf-8
 set termencoding=utf-8
 
-# turn syntax highlighting on.
-syntax enable
 # specify regex engine
 set regexpengine=2
+# turn syntax highlighting on.
+syntax enable
 
 # show invisible characters
 set list
@@ -125,8 +125,6 @@ set wildcharm=<c-z>
 set wildmenu
 # wildmenu options
 set wildoptions=pum,tagfile
-set wildignore=*.o,*~,*.a,*.so,*.pyc,*.swp,.git/,*.class,*/target/*,*/build/*,.idea/
-set wildignore+=*/Library/*,*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*,*/.DS_Store
 
 # program to use for the :grep command
 if executable('rg') > 0
@@ -167,10 +165,6 @@ Plug 'tpope/vim-surround'
 
 # language server protocol (lsp) plugin for vim9
 Plug 'yegappan/lsp'
-
-# modern database interface for vim
-Plug 'tpope/vim-dadbod'
-Plug 'kristijanhusak/vim-dadbod-ui'
 
 # github copilot
 Plug 'github/copilot.vim'
@@ -224,7 +218,7 @@ vnoremap <leader>p "+p
 nmap <leader>f :find **/*
 vmap <leader>f "0y:find **/*<c-r>0<c-z>
 nmap <leader>F :find **/*<c-r><c-w><c-z>
-nmap <leader>e :e %:p:h<c-z>
+nmap <leader>e :e %:.:h<c-z>
 nmap <leader>b :b <c-z>
 nmap <leader>B :bd <c-z>
 nmap <leader>j :jumps<cr>
@@ -238,18 +232,16 @@ nnoremap <leader>r :%s/<c-r><c-w>//g<left><left>
 vnoremap <leader>r "0y:%s/<c-r>0//g<left><left>
 
 # copy, move and remove file
-nnoremap <leader>C :!cp -r %:p<c-z> %:p:h<left><left><left><left><left><left>
-nnoremap <leader>M :!mv %:p<c-z> %:p:h<left><left><left><left><left><left>
-nnoremap <leader>R :!rm -rf %:p<c-z>
+nnoremap <leader>sc :!cp -r %:.<c-z> %:.:h<c-z>
+nnoremap <leader>sm :!mv %:.<c-z> %:.:h<c-z>
+nnoremap <leader>sr :!rm -rf %:.<c-z>
 
 # ==============================================================================
 # commands and autocmds
 # ==============================================================================
 autocmd! FileType c,cpp setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
 autocmd! FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
-autocmd! FileType java setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
 autocmd! FileType go setlocal noexpandtab shiftwidth=4 tabstop=4 softtabstop=4
-autocmd! FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
 autocmd! FileType javascript,typescript setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 
 # custom find command
@@ -318,7 +310,7 @@ def VimAutoSession(): void
   var session_file = session_dir .. '/' .. session_name .. '.vim'
 
   if filereadable(session_file)
-    var choice = confirm("", "load last session? &yes\n&no\n&clear", 2, "Question")
+    var choice = confirm("", "load last session? &yes\n&no\n&clear", 2)
     if choice == 1
       execute 'silent! source ' .. session_file
     elseif choice == 3
@@ -333,7 +325,7 @@ autocmd! VimEnter * call VimAutoSession()
 # ==============================================================================
 # color schemes should be loaded after plug#end().
 # we prepend it with 'silent!' to ignore errors when it's not yet installed.
-silent! colorscheme habamax
+silent! colorscheme wildcharm
 
 # lsp features
 var lsp_opts = {
@@ -347,37 +339,52 @@ var lsp_opts = {
   showSignature: v:false,
 }
 autocmd User LspSetup call LspOptionsSet(lsp_opts)
-# lsp
+# servers
 var lsp_servers = [{
+  name: 'clangd',
+  filetype: ['c', 'cpp'],
+  path: 'clangd',
+},
+{
   name: 'pyright',
   filetype: 'python',
   path: 'pyright-langserver',
-  args: ['--stdio']
-}, {
+  args: ['--stdio'],
+},
+# {
+#   name: 'gopls',
+#   filetype: 'go',
+#   path: 'gopls',
+# },
+{
   name: 'tsserver',
   filetype: ['javascript', 'typescript'],
   path: 'typescript-language-server',
   args: ['--stdio'],
 }]
 autocmd User LspSetup call LspAddServer(lsp_servers)
-# goto
-nnoremap gd :LspGotoDefinition<cr>
-nnoremap gD :LspGotoDeclaration<cr>
-nnoremap gy :LspGotoTypeDef<cr>
-nnoremap gi :LspGotoImpl<cr>
-nnoremap gr :LspShowReferences<cr>
-# action
-nnoremap K :LspHover<cr>
-nnoremap ga :LspCodeAction<cr>
-nnoremap gR :LspRename<cr>
-nnoremap gq :LspFormat<cr>
-vnoremap gq :LspFormat<cr>
-nnoremap <c-s> :LspShowSignature<cr>
-# diagnostics
-nnoremap ]d :LspDiagNext<cr>
-nnoremap [d :LspDiagPrev<cr>
-nnoremap <leader>k :LspDiagCurrent<cr>
-nnoremap <leader>d :LspDiagShow<cr>
+# lsp
+augroup lsp_keymaps
+  autocmd!
+  # goto
+  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gd :LspGotoDefinition<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gD :LspGotoDeclaration<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gy :LspGotoTypeDef<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gi :LspGotoImpl<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gr :LspShowReferences<cr>
+  # action
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap K :LspHover<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap ga :LspCodeAction<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap gR :LspRename<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap gq :LspFormat<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap gq :LspFormat<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap <c-s> :LspShowSignature<cr>
+  # diagnostics
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap ]d :LspDiagNext<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap [d :LspDiagPrev<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap <leader>k :LspDiagCurrent<cr>
+  autocmd FileType c,cpp,python,go,javascript,typescript noremap <leader>d :LspDiagShow<cr>
+augroup END
 
 # disable copilot by default
 g:copilot_enabled = 0

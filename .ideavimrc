@@ -8,53 +8,58 @@ source ~/.vimrc
 
 " --- enable ideavim plugins https://jb.gg/ideavim-plugins
 set commentary
+set surround
 set highlightedyank
 
 " ide specific options
 set ideajoin
 set ideastatusicon=gray
 
+" nohlsearch
+nnoremap <esc> :nohlsearch<cr>
+
 " -- map ide actions to ideavim -- https://jb.gg/abva4t
 " fuzzy find stuff
-nnoremap <leader>f :action GotoFile<cr>
-vnoremap <leader>f :action GotoFile<cr>
-nnoremap <leader>F :action GotoClass<cr>
-vnoremap <leader>F :action GotoClass<cr>
-nnoremap <leader>g :action FindInPath<cr>
-vnoremap <leader>g :action FindInPath<cr>
-nnoremap <leader>s :action SearchEverywhere<cr>
-vnoremap <leader>s :action SearchEverywhere<cr>
+nmap <leader>f <Action>(GotoFile)
+vmap <leader>f <Action>(GotoFile)
+nmap <leader>F <Action>(GotoClass)
+vmap <leader>F <Action>(GotoClass)
+nmap <leader>g <Action>(FindInPath)
+vmap <leader>g <Action>(FindInPath)
+nmap <leader>s <Action>(SearchEverywhere)
+vmap <leader>s <Action>(SearchEverywhere)
 
 " buffer switching
-nnoremap <leader>b :action Switcher<cr>
-nnoremap <leader>B :action SwitcherAndRecentFiles<cr>
+nmap <leader>b <Action>(Switcher)
+nmap <leader>B <Action>(SwitcherAndRecentFiles)
 
 " code styles
-nnoremap <silent> gq :action ReformatCode<cr>
-vnoremap <silent> gq :action ReformatCode<cr>
+nmap <silent> gq <Action>(ReformatCode)
+vmap <silent> gq <Action>(ReformatCode)
 
 " jump around
-nnoremap gd :action GotoDeclaration<cr>
-nnoremap gD :action GotoTypeDeclaration<cr>
-nnoremap gi :action GotoImplementation<cr>
-nnoremap gt :action GotoTest<cr>
-nnoremap gr :action FindUsages<cr>
-vnoremap gr :action FindUsages<cr>
+nmap gd <Action>(GotoDeclaration)
+nmap gD <Action>(GotoTypeDeclaration)
+nmap gi <Action>(GotoImplementation)
+nmap gt <Action>(GotoTest)
+nmap gr <Action>(FindUsages)
+vmap gr <Action>(FindUsages)
 
 " run stuff
-nnoremap gx :action RunMenu<cr>
-nnoremap gX :action RunClass<cr>
+nmap gx <Action>(RunClass)
+nmap <leader>x <Action>(RunMenu)
 
 " code actions
-nnoremap ga :action GotoAction<cr>
-nnoremap K :action ShowHoverInfo<cr>
+nmap ga <Action>(GotoAction)
+nmap K <Action>(ShowHoverInfo)
 
 " project view
-nnoremap - :action SelectInProjectView<cr>
+nmap - <Action>(SelectInProjectView)
+nmap <space>e <Action>(ShowNavBar)
 
 " hide all windows
-nnoremap X :action HideAllWindows<cr>
+nmap Q <Action>(HideAllWindows)
 
 " diagnostics navigation
-nnoremap ]d :action GotoNextError<cr>
-nnoremap [d :action GotoPreviousError<cr>
+nmap ]d <Action>(GotoNextError)
+nmap [d <Action>(GotoPreviousError)

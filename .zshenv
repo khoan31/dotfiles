@@ -12,11 +12,8 @@ export LC_ALL=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 
 # default editor
-export EDITOR="nvim"
-export VISUAL="nvim"
-
-# scripts dir
-export SCRIPTS="$HOME/scripts"
+export EDITOR="vim"
+export VISUAL="vim"
 
 # zsh history
 HISTFILE=$HOME/.zhistory
@@ -26,9 +23,6 @@ HISTSIZE=10000
 # use 256 color term
 export TERM=xterm-256color
 export CLICOLOR=1
-
-# jdk21 path
-export JDK21=$HOME/.sdkman/candidates/java/21.0.4-amzn
 
 #this must be at the end of the file for sdkman to work!!!
 export SDKMAN_DIR="$HOME/.sdkman"
