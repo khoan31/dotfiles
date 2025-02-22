@@ -6,7 +6,7 @@ set nocompatible
 autocmd! QuickFixCmdPost [^l]* cwindow
 
 # quick exit some filetypes
-autocmd! FileType help,qf,diff,fugitive,fugitiveblame,dbout,lspgfm nnoremap <silent> <buffer> q :q<cr>
+autocmd! FileType help,qf,diff,fugitive,fugitiveblame nnoremap <silent> <buffer> q :q<cr>
 
 # ==============================================================================
 # general settings / options
@@ -66,9 +66,14 @@ set nowrap
 set splitbelow
 set splitright
 
+# program to use for the :grep command
+if executable('rg') > 0
+  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --column\ --hidden
+endif
+
 # enable title string and sidescrolloff
-set title
 set sidescrolloff=10
+set title
 
 # searching
 set incsearch
@@ -126,11 +131,6 @@ set wildmenu
 # wildmenu options
 set wildoptions=pum,tagfile
 
-# program to use for the :grep command
-if executable('rg') > 0
-  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --column\ --hidden
-endif
-
 # basic theming
 set background=dark
 set termguicolors
@@ -157,17 +157,14 @@ call plug#begin()
 # a git wrapper so awesome, it should be illegal
 Plug 'tpope/vim-fugitive'
 
-# comment stuff out
-Plug 'tpope/vim-commentary'
-
 # delete/change/add parentheses/quotes/xml-tags/much more with ease
 Plug 'tpope/vim-surround'
 
 # language server protocol (lsp) plugin for vim9
 Plug 'yegappan/lsp'
 
-# github copilot
-Plug 'github/copilot.vim'
+# soho vibes for vim
+Plug 'rose-pine/vim', { 'as': 'rose-pine' }
 
 # call plug#end to update &runtimepath and initialize the plugin system.
 # - it automatically executes `filetype plugin indent on` and `syntax enable`
@@ -192,7 +189,6 @@ tnoremap <c-l> <c-\><c-n><c-w>l
 
 # clear search highlighting
 nnoremap <silent> <esc> :nohlsearch<cr>
-tnoremap <silent> <esc><esc> <c-\><c-n>
 
 # re-size split windows using arrow keys
 nnoremap <silent> <up> :resize -2<cr>
@@ -223,9 +219,9 @@ nmap <leader>b :b <c-z>
 nmap <leader>B :bd <c-z>
 nmap <leader>j :jumps<cr>
 nmap <leader>m :marks<cr>
-nmap <leader>g :grep ''<left>
-vmap <leader>g "0y:grep '<c-r>0'<left>
-nmap <leader>G :grep '<c-r><c-w>'<cr><cr>
+nmap <leader>g :silent grep! ''<left>
+vmap <leader>g "0y:grep! '<c-r>0'<left>
+nmap <leader>G :grep! '<c-r><c-w>'<cr><cr>
 
 # find and replace
 nnoremap <leader>r :%s/<c-r><c-w>//g<left><left>
@@ -261,7 +257,7 @@ if executable('fd')
   enddef
 
   def CompleteFind(pattern: string, cmdline: string, cursorpos: number): list<string>
-    var cmd = 'fd -H -tf -td "' .. pattern .. '" ' .. getcwd()
+    var cmd = 'fd -H -tf -td "' .. pattern .. '" --strip-cwd-prefix=always'
     if isdirectory(pattern)
       cmd = 'fd -H -tf -td . ' .. pattern
     endif
@@ -325,16 +321,24 @@ autocmd! VimEnter * call VimAutoSession()
 # ==============================================================================
 # color schemes should be loaded after plug#end().
 # we prepend it with 'silent!' to ignore errors when it's not yet installed.
-silent! colorscheme wildcharm
+silent! colorscheme rosepine
+highlight link netrwMarkFile Search
 
 # lsp features
 var lsp_opts = {
+  highlightDiagInline: v:false, # must be false
+  autoHighlightDiags: v:true,
   autoComplete: v:false,
   diagSignErrorText: '↯',
   diagSignHintText: '↝',
   diagSignInfoText: '⇌',
   diagSignWarningText: '↺',
+  ignoreMissingServer: v:true,
+  keepFocusInDiags: v:true,
+  keepFocusInReferences: v:true,
   hoverInPreview: v:true,
+  showDiagInBalloon: v:false,
+  showDiagInPopup: v:false,
   omniComplete: v:true,
   showSignature: v:false,
 }
@@ -351,11 +355,11 @@ var lsp_servers = [{
   path: 'pyright-langserver',
   args: ['--stdio'],
 },
-# {
-#   name: 'gopls',
-#   filetype: 'go',
-#   path: 'gopls',
-# },
+{
+  name: 'gopls',
+  filetype: 'go',
+  path: 'gopls',
+},
 {
   name: 'tsserver',
   filetype: ['javascript', 'typescript'],
@@ -366,6 +370,7 @@ autocmd User LspSetup call LspAddServer(lsp_servers)
 # lsp
 augroup lsp_keymaps
   autocmd!
+  autocmd FileType lspgfm nnoremap <silent> <buffer> q :q<cr>
   # goto
   autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gd :LspGotoDefinition<cr>
   autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gD :LspGotoDeclaration<cr>
@@ -378,26 +383,12 @@ augroup lsp_keymaps
   autocmd FileType c,cpp,python,go,javascript,typescript noremap gR :LspRename<cr>
   autocmd FileType c,cpp,python,go,javascript,typescript noremap gq :LspFormat<cr>
   autocmd FileType c,cpp,python,go,javascript,typescript noremap gq :LspFormat<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap <c-s> :LspShowSignature<cr>
   # diagnostics
   autocmd FileType c,cpp,python,go,javascript,typescript noremap ]d :LspDiagNext<cr>
   autocmd FileType c,cpp,python,go,javascript,typescript noremap [d :LspDiagPrev<cr>
   autocmd FileType c,cpp,python,go,javascript,typescript noremap <leader>k :LspDiagCurrent<cr>
   autocmd FileType c,cpp,python,go,javascript,typescript noremap <leader>d :LspDiagShow<cr>
 augroup END
-
-# disable copilot by default
-g:copilot_enabled = 0
-
-# ==============================================================================
-# highlights
-# ==============================================================================
-highlight Normal cterm=NONE guibg=NONE
-highlight NormalNC cterm=NONE guibg=NONE
-highlight Statusline cterm=NONE guibg=NONE guifg=grey
-highlight StatuslineNC cterm=NONE guibg=NONE guifg=darkgrey
-highlight VertSplit cterm=NONE guibg=NONE guifg=darkgrey
-highlight link netrwMarkFile Search
 
 # compile funcs
 defcompile

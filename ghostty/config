@@ -1,6 +1,6 @@
 # theme and font
 term = xterm-256color
-theme = xcodedarkhc
+theme = rose-pine
 font-family = jetbrainsmononl nerd font mono
 font-style = Regular
 font-thicken = true
