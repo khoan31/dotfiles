@@ -33,6 +33,7 @@ set autoread
 # enable break indent
 set breakindent
 set visualbell
+set signcolumn=yes
 
 # allow backspacing over listed items and belloff
 set backspace=indent,eol,start
@@ -85,14 +86,9 @@ set matchpairs+=<:>
 # enable type file detection
 filetype on
 filetype plugin on
-
 # load an indent file for the detected file type.
 filetype indent on
 filetype plugin indent on
-
-# enable mouse interaction
-set mouse=a
-set mousemodel=popup_setpos
 
 # limit command height to 1 line
 set cmdheight=1
@@ -157,8 +153,17 @@ call plug#begin()
 # a git wrapper so awesome, it should be illegal
 Plug 'tpope/vim-fugitive'
 
+# comment stuff out
+Plug 'tpope/vim-commentary'
+
 # delete/change/add parentheses/quotes/xml-tags/much more with ease
 Plug 'tpope/vim-surround'
+
+# enable repeating supported plugin maps with '.'
+Plug 'tpope/vim-repeat'
+
+# shows git diff markers in the sign column and stages/previews/undoes hunks and partial hunks
+Plug 'airblade/vim-gitgutter'
 
 # language server protocol (lsp) plugin for vim9
 Plug 'yegappan/lsp'
@@ -186,9 +191,6 @@ tnoremap <c-h> <c-\><c-n><c-w>h
 tnoremap <c-j> <c-\><c-n><c-w>j
 tnoremap <c-k> <c-\><c-n><c-w>k
 tnoremap <c-l> <c-\><c-n><c-w>l
-
-# clear search highlighting
-nnoremap <silent> <esc> :nohlsearch<cr>
 
 # re-size split windows using arrow keys
 nnoremap <silent> <up> :resize -2<cr>
@@ -220,8 +222,8 @@ nmap <leader>B :bd <c-z>
 nmap <leader>j :jumps<cr>
 nmap <leader>m :marks<cr>
 nmap <leader>g :silent grep! ''<left>
-vmap <leader>g "0y:grep! '<c-r>0'<left>
-nmap <leader>G :grep! '<c-r><c-w>'<cr><cr>
+vmap <leader>g "0y:silent grep! '<c-r>0'<left>
+nmap <leader>G :silent grep! '<c-r><c-w>'<cr><cr>
 
 # find and replace
 nnoremap <leader>r :%s/<c-r><c-w>//g<left><left>
@@ -236,8 +238,8 @@ nnoremap <leader>sr :!rm -rf %:.<c-z>
 # commands and autocmds
 # ==============================================================================
 autocmd! FileType c,cpp setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
-autocmd! FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
 autocmd! FileType go setlocal noexpandtab shiftwidth=4 tabstop=4 softtabstop=4
+autocmd! FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
 autocmd! FileType javascript,typescript setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 
 # custom find command
@@ -324,6 +326,13 @@ autocmd! VimEnter * call VimAutoSession()
 silent! colorscheme rosepine
 highlight link netrwMarkFile Search
 
+# gitgutter
+g:gitgutter_map_keys = 0
+nmap ]h <plug>(GitGutterNextHunk)
+nmap [h <plug>(GitGutterPrevHunk)
+nmap <leader>h <plug>(GitGutterPreviewHunk)
+highlight! link SignColumn LineNr
+
 # lsp features
 var lsp_opts = {
   highlightDiagInline: v:false, # must be false
@@ -350,15 +359,15 @@ var lsp_servers = [{
   path: 'clangd',
 },
 {
+  name: 'gopls',
+  filetype: 'go',
+  path: 'gopls',
+},
+{
   name: 'pyright',
   filetype: 'python',
   path: 'pyright-langserver',
   args: ['--stdio'],
-},
-{
-  name: 'gopls',
-  filetype: 'go',
-  path: 'gopls',
 },
 {
   name: 'tsserver',
@@ -372,23 +381,26 @@ augroup lsp_keymaps
   autocmd!
   autocmd FileType lspgfm nnoremap <silent> <buffer> q :q<cr>
   # goto
-  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gd :LspGotoDefinition<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gD :LspGotoDeclaration<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gy :LspGotoTypeDef<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gi :LspGotoImpl<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript nnoremap gr :LspShowReferences<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gd :LspGotoDefinition<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gD :LspGotoDeclaration<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gy :LspGotoTypeDef<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gi :LspGotoImpl<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gr :LspShowReferences<cr>
   # action
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap K :LspHover<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap ga :LspCodeAction<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap gR :LspRename<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap gq :LspFormat<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap gq :LspFormat<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap K :LspHover<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap ga :LspCodeAction<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap gR :LspRename<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap gq :LspFormat<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap gq :LspFormat<cr>
   # diagnostics
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap ]d :LspDiagNext<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap [d :LspDiagPrev<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap <leader>k :LspDiagCurrent<cr>
-  autocmd FileType c,cpp,python,go,javascript,typescript noremap <leader>d :LspDiagShow<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap ]d :LspDiagNext<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap [d :LspDiagPrev<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <leader>k :LspDiagCurrent<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <leader>d :LspDiagShow<cr>
 augroup END
+
+# statusline hl
+highlight Statusline ctermbg=NONE guibg=NONE
 
 # compile funcs
 defcompile

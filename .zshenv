@@ -24,6 +24,10 @@ HISTSIZE=10000
 export TERM=xterm-256color
 export CLICOLOR=1
 
+# set gopath
+export GOPATH="$HOME/go"
+export PATH="$GOPATH/bin:$PATH"
+
 #this must be at the end of the file for sdkman to work!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
