@@ -1,7 +1,7 @@
 # theme and font
 term = xterm-256color
 theme = rose-pine
-font-family = jetbrainsmononl
+font-family = jetbrains mono nl
 font-style = Regular
 font-thicken = true
 font-size = 15
