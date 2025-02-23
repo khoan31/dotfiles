@@ -9,8 +9,8 @@ fi
 
 echo '[-] installing some prerequisite packages [-]'
 sudo apt update
-sudo apt upgrade -gy
-sudo apt install -gy curl wget zsh git coreutils watch ncdu
+sudo apt upgrade -y
+sudo apt install -y curl wget zsh git coreutils watch ncdu
 
 echo '[-] installing favourite font [-]'
 wget 'https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/JetBrainsMono.zip'
@@ -19,7 +19,7 @@ unzip JetBrainsMono.zip -d ~/.local/share/fonts
 rm -f JetBrainsMono.zip
 
 function backup() {
-  local backup_dir=dotfiles-bak-$(date +%s)
+  local backup_dir=dotfiles_bak_$(date +%s)
 
   mkdir ~/$backup_dir
   mv ~/.zshrc ~/$backup_dir/.zshrc
@@ -43,14 +43,26 @@ echo '[-] linking dotfiles [-]'
 linking
 
 echo '[-] installing extended packages [-]'
-sudo apt install -gy zsh-autosuggestions parallel fd-find ripgrep jq
-sudo apt install -gy httpie pyenv universal-ctags
+sudo apt install -y zsh-autosuggestions parallel fd-find ripgrep jq httpie universal-ctags
 
 echo '[-] downloading git-prompt.sh script [-]'
 mkdir -p ~/.zsh/plugins/git/
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.zsh/plugins/git/git-prompt.sh
 
-echo '[-] installing ghostty [-] - tba'
+echo '[-] installing vim plugin manager [-]'
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+echo '[-] creating common directories [-]'
+mkdir -p ~/repos
+mkdir -p ~/opensource
+
+echo '[-] installing ghostty [-]'
+git clone https://github.com/ghostty-org/ghostty ~/opensource
+cd ~/opensource/ghostty
+git checkout v1.1.2
+sudo apt install -y gtk4 libadwaita pkg-config
+zig build -p $HOME/.local -Doptimize=ReleaseFast
 
 echo '[-] change default shell to zsh [-]'
 chsh -s $(which zsh)
