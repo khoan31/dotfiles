@@ -25,7 +25,7 @@ brew update
 brew install curl wget git coreutils watch ncdu
 
 echo '[-] installing favourite font [-]'
-brew install --cask font-jetbrains-mono-nerd-font
+wget 'https://download.jetbrains.com/fonts/JetBrainsMono-2.304.zip'
 
 function backup() {
   local backup_dir=dotfiles-bak-$(date +%s)
