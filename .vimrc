@@ -6,7 +6,7 @@ set nocompatible
 autocmd! QuickFixCmdPost [^l]* cwindow
 
 # quick exit some filetypes
-autocmd! FileType help,qf,diff,fugitive,fugitiveblame nnoremap <silent> <buffer> q :q<cr>
+autocmd! FileType help,qf,diff,fugitive,fugitiveblame,lspgfm nnoremap <silent> <buffer> q :q<cr>
 
 # ==============================================================================
 # general settings / options
@@ -153,15 +153,6 @@ call plug#begin()
 # a git wrapper so awesome, it should be illegal
 Plug 'tpope/vim-fugitive'
 
-# comment stuff out
-Plug 'tpope/vim-commentary'
-
-# delete/change/add parentheses/quotes/xml-tags/much more with ease
-Plug 'tpope/vim-surround'
-
-# enable repeating supported plugin maps with '.'
-Plug 'tpope/vim-repeat'
-
 # shows git diff markers in the sign column and stages/previews/undoes hunks and partial hunks
 Plug 'airblade/vim-gitgutter'
 
@@ -181,21 +172,13 @@ call plug#end()
 # ==============================================================================
 # keymaps
 # ==============================================================================
-# use ctrl+<hjkl> to switch between windows
-nnoremap <c-h> <c-w>h
-nnoremap <c-j> <c-w>j
-nnoremap <c-k> <c-w>k
-nnoremap <c-l> <c-w>l
-# same but between terminals
-tnoremap <c-h> <c-\><c-n><c-w>h
-tnoremap <c-j> <c-\><c-n><c-w>j
-tnoremap <c-k> <c-\><c-n><c-w>k
-tnoremap <c-l> <c-\><c-n><c-w>l
+nnoremap <silent> <esc> :nohlsearch<cr>
+tnoremap <silent> <esc><esc> <c-\><c-n>
 
 # re-size split windows using arrow keys
-nnoremap <silent> <up> :resize -2<cr>
+nnoremap <silent> <up> :resize +2<cr>
 nnoremap <silent> <right> :vertical resize +2<cr>
-nnoremap <silent> <down> :resize +2<cr>
+nnoremap <silent> <down> :resize -2<cr>
 nnoremap <silent> <left> :vertical resize -2<cr>
 
 # navigate through quickfix list
@@ -218,7 +201,6 @@ vmap <leader>f "0y:find **/*<c-r>0<c-z>
 nmap <leader>F :find **/*<c-r><c-w><c-z>
 nmap <leader>e :e %:.:h<c-z>
 nmap <leader>b :b <c-z>
-nmap <leader>B :bd <c-z>
 nmap <leader>j :jumps<cr>
 nmap <leader>m :marks<cr>
 nmap <leader>g :silent grep! ''<left>
@@ -233,6 +215,9 @@ vnoremap <leader>r "0y:%s/<c-r>0//g<left><left>
 nnoremap <leader>sc :!cp -r %:.<c-z> %:.:h<c-z>
 nnoremap <leader>sm :!mv %:.<c-z> %:.:h<c-z>
 nnoremap <leader>sr :!rm -rf %:.<c-z>
+
+# create tags file
+nnoremap <silent> <leader>T :!ctags --tag-relative=never -G -R .<cr>
 
 # ==============================================================================
 # commands and autocmds
@@ -379,24 +364,23 @@ autocmd User LspSetup call LspAddServer(lsp_servers)
 # lsp
 augroup lsp_keymaps
   autocmd!
-  autocmd FileType lspgfm nnoremap <silent> <buffer> q :q<cr>
   # goto
-  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gd :LspGotoDefinition<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gD :LspGotoDeclaration<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gy :LspGotoTypeDef<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gi :LspGotoImpl<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap gr :LspShowReferences<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap <silent> <buffer> gd :LspGotoDefinition<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap <silent> <buffer> gD :LspGotoDeclaration<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap <silent> <buffer> gy :LspGotoTypeDef<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap <silent> <buffer> gi :LspGotoImpl<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript nnoremap <silent> <buffer> gr :LspShowReferences<cr>
   # action
-  autocmd FileType c,cpp,go,python,javascript,typescript noremap K :LspHover<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript noremap ga :LspCodeAction<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript noremap gR :LspRename<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript noremap gq :LspFormat<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript noremap gq :LspFormat<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <silent> <buffer> K :LspHover<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <silent> <buffer> ga :LspCodeAction<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <silent> <buffer> gR :LspRename<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <silent> <buffer> gq :LspFormat<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <silent> <buffer> gq :LspFormat<cr>
   # diagnostics
-  autocmd FileType c,cpp,go,python,javascript,typescript noremap ]d :LspDiagNext<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript noremap [d :LspDiagPrev<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript noremap <leader>k :LspDiagCurrent<cr>
-  autocmd FileType c,cpp,go,python,javascript,typescript noremap <leader>d :LspDiagShow<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <silent> <buffer> ]d :LspDiagNext<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <silent> <buffer> [d :LspDiagPrev<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <silent> <buffer> <leader>k :LspDiagCurrent<cr>
+  autocmd FileType c,cpp,go,python,javascript,typescript noremap <silent> <buffer> <leader>d :LspDiagShow<cr>
 augroup END
 
 # statusline hl
