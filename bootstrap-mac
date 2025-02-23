@@ -2,21 +2,30 @@
 ## install essential tools for my development environment
 ## -----
 
-if [[ "$OSTYPE" != "linux-gnu" ]]; then
+if [[ "$OSTYPE" != "darwin"* ]]; then
   echo 'unsupported os.'
   exit
 fi
 
+function init() {
+  echo '[-] installing xcode command line tools [-]'
+  xcode-select --install
+
+  if ! hash brew &> /dev/null; then
+    echo '[-] installing homebrew [-]'
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  fi
+}
+init
+
 echo '[-] installing some prerequisite packages [-]'
-sudo apt update
-sudo apt upgrade -gy
-sudo apt install -gy curl wget zsh git coreutils watch ncdu
+brew update
+brew install curl wget git coreutils watch ncdu
 
 echo '[-] installing favourite font [-]'
-wget 'https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/JetBrainsMono.zip'
-mkdir -p ~/.local/share/fonts
-unzip JetBrainsMono.zip -d ~/.local/share/fonts
-rm -f JetBrainsMono.zip
+brew install --cask font-jetbrains-mono-nerd-font
 
 function backup() {
   local backup_dir=dotfiles-bak-$(date +%s)
@@ -43,16 +52,16 @@ echo '[-] linking dotfiles [-]'
 linking
 
 echo '[-] installing extended packages [-]'
-sudo apt install -gy zsh-autosuggestions parallel fd-find ripgrep jq
-sudo apt install -gy httpie pyenv universal-ctags
+brew install zsh-autosuggestions parallel fd ripgrep jq
+brew install httpie pyenv universal-ctags
 
 echo '[-] downloading git-prompt.sh script [-]'
 mkdir -p ~/.zsh/plugins/git/
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.zsh/plugins/git/git-prompt.sh
 
-echo '[-] installing ghostty [-] - tba'
+echo '[-] installing ghostty [-]'
+brew install ghostty
 
-echo '[-] change default shell to zsh [-]'
-chsh -s $(which zsh)
-
+# echo '[-] change default shell to zsh [-]'
+# chsh -s $(which zsh)
 echo '[-] Setup done. Run `source ~/.zshrc` to refresh shell config [-]'
